@@ -3,6 +3,19 @@ import streamlit as st
 
 st.set_page_config(page_title="FotoRed", page_icon="📷", layout="centered")
 
+perfil = {
+    "nombre": "Ana Rivera",
+    "usuario": "ana_fotos",
+    "biografia": "Me gusta explorar la naturaleza y compartir lo que descubro con mi cámara.",
+}
+
+with st.sidebar:
+    st.header("Perfil de ejemplo")
+    st.subheader(perfil["nombre"])
+    st.write(f"@{perfil['usuario']}")
+    st.write(perfil["biografia"])
+    st.caption("Datos ficticios para este prototipo. No hay una sesión iniciada.")
+
 st.title("📷 FotoRed")
 st.subheader("Un espacio para compartir tus fotografías")
 st.write("¡Bienvenido a FotoRed! Estamos construyendo esta aplicación paso a paso.")

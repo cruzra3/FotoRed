@@ -1,9 +1,12 @@
 # PROGRESS.md
 
 ## Estado actual
-Página principal y feed de tres publicaciones ficticias implementados como prototipo de aprendizaje.
+Primera versión implementada: página principal, feed de tres publicaciones ficticias
+y perfil de ejemplo en la barra lateral. Pendiente de revisión visual manual.
 
 ## Completado
+- Perfil ficticio con nombre, usuario y biografía en st.sidebar
+- Verificación con Streamlit AppTest: datos del perfil en la barra lateral, título y tres imágenes del feed; ejecución sin excepciones
 - Feed de ejemplo con tres usuarios ficticios, fotografías de Picsum y descripciones
 - Verificación del feed con Streamlit AppTest: sin excepciones; tres usuarios, elementos de imagen y descripciones comprobados
 - Preferencia actual: guardar con commits locales; posponer git push
@@ -16,10 +19,10 @@ Página principal y feed de tres publicaciones ficticias implementados como prot
 - Verificación con Streamlit AppTest: ejecución sin excepciones, título y aviso comprobados
 
 ## En progreso
-- Desarrollo progresivo de la primera versión
+- Revisión manual de la primera versión
 
 ## Pendiente
-- Crear perfil de ejemplo
+- Comprobar visualmente página principal, feed y perfil
 - Implementar persistencia
 - Implementar autenticación
 
@@ -29,4 +32,5 @@ manual en el navegador, incluida la descarga de fotografías externas de Picsum,
 que requiere Internet. El prototipo no está listo para producción.
 
 ## Próxima tarea
-Crear un perfil de usuario de ejemplo, sin autenticación ni base de datos.
+Revisar manualmente la primera versión en el navegador y acordar el siguiente
+incremento antes de implementar persistencia o autenticación.

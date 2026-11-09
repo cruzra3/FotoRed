@@ -32,8 +32,10 @@ Las fotografías de muestra se cargan desde Picsum y requieren conexión a Inter
 
 `app.py` contiene la página principal y `requirements.txt` indica la versión de
 Streamlit utilizada. Este es un prototipo de aprendizaje, no una aplicación lista
-para producción. Incluye un feed de ejemplo; todavía no incluye perfiles,
-autenticación ni persistencia.
+para producción. Incluye un feed y un perfil ficticio en la barra lateral, con
+nombre, usuario y biografía. Si la barra está oculta, ábrela con el control de
+Streamlit en la esquina superior izquierda. Todavía no incluye autenticación
+ni persistencia.
 
 ## Guardar el progreso con Git y GitHub
 
