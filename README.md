@@ -27,11 +27,13 @@ env/bin/python -m streamlit run FotoRed/app.py
 ```
 
 Abre la dirección local que indique Streamlit. Verás el título FotoRed, una
-bienvenida y un aviso sobre el estado del prototipo.
+bienvenida, un aviso sobre el estado del prototipo y tres publicaciones ficticias.
+Las fotografías de muestra se cargan desde Picsum y requieren conexión a Internet.
 
 `app.py` contiene la página principal y `requirements.txt` indica la versión de
 Streamlit utilizada. Este es un prototipo de aprendizaje, no una aplicación lista
-para producción. Todavía no incluye feed, perfiles, autenticación ni persistencia.
+para producción. Incluye un feed de ejemplo; todavía no incluye perfiles,
+autenticación ni persistencia.
 
 ## Guardar el progreso con Git y GitHub
 
