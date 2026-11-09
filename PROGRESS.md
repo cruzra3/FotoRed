@@ -2,9 +2,11 @@
 
 ## Estado actual
 Primera versión implementada: página principal, feed de tres publicaciones ficticias
-y perfil de ejemplo en la barra lateral. Pendiente de revisión visual manual.
+y perfil de ejemplo en la barra lateral. Revisión visual manual completada por
+el usuario, quien confirmó que la pantalla se ve bien.
 
 ## Completado
+- Revisión visual manual de la primera versión: el usuario confirmó que la pantalla se ve bien
 - Perfil ficticio con nombre, usuario y biografía en st.sidebar
 - Verificación con Streamlit AppTest: datos del perfil en la barra lateral, título y tres imágenes del feed; ejecución sin excepciones
 - Feed de ejemplo con tres usuarios ficticios, fotografías de Picsum y descripciones
@@ -19,18 +21,19 @@ y perfil de ejemplo en la barra lateral. Pendiente de revisión visual manual.
 - Verificación con Streamlit AppTest: ejecución sin excepciones, título y aviso comprobados
 
 ## En progreso
-- Revisión manual de la primera versión
+- Esperando aprobación del usuario para el siguiente incremento
 
 ## Pendiente
-- Comprobar visualmente página principal, feed y perfil
+- Aprobar e implementar la selección y previsualización de una fotografía
 - Implementar persistencia
 - Implementar autenticación
 
 ## Problemas conocidos
-Ninguno detectado en la verificación con AppTest. Pendiente de comprobación visual
-manual en el navegador, incluida la descarga de fotografías externas de Picsum,
-que requiere Internet. El prototipo no está listo para producción.
+Ninguno reportado tras la verificación con AppTest y la revisión visual del usuario.
+Las fotografías externas de Picsum requieren Internet. El prototipo no está listo
+para producción.
 
 ## Próxima tarea
-Revisar manualmente la primera versión en el navegador y acordar el siguiente
-incremento antes de implementar persistencia o autenticación.
+Propuesta pendiente de aprobación: permitir seleccionar una fotografía JPG o PNG
+y previsualizarla con st.file_uploader y st.image, sin guardarla ni añadirla al feed.
+Pedir aprobación antes de implementar este cambio.
