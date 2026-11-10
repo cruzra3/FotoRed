@@ -43,16 +43,22 @@ Puedes escribir una descripción opcional en el campo de texto. Con una fotograf
 válida seleccionada, el texto aparece debajo de la vista previa. Para actualizarlo,
 haz clic fuera del campo después de escribir. Si queda vacío o solo contiene
 espacios, no se muestra una descripción. El texto se muestra literalmente, sin
-interpretar Markdown, y tampoco se guarda ni publica.
+interpretar Markdown. Editarlo no cambia publicaciones anteriores.
 
 En la sección «Previsualizar una fotografía», selecciona un archivo JPG, JPEG o
 PNG de tu computadora. Aparecerá su vista previa encima del feed. Puedes cambiar
 el archivo o quitarlo usando el selector. Si el contenido no es una imagen válida,
 se mostrará un aviso.
 
-Esta función es una demostración: no guarda la fotografía en disco ni en una base
-de datos y no la añade al feed. La imagen seleccionada se procesa temporalmente
-para mostrarla; no hay un botón de publicar.
+Pulsa «Publicar» para añadir una copia de la foto y su descripción al principio
+del feed, con el usuario ficticio del perfil. Sin una foto válida aparecerá un aviso.
+La descripción es opcional. Cada clic válido crea una publicación; cambiar el texto
+o quitar el archivo del selector no elimina lo ya publicado.
+
+Esta función es una demostración: st.session_state conserva las publicaciones
+en memoria durante la sesión, sin escribirlas en disco ni en una base de datos.
+Al recargar la página o reiniciar la sesión se pierden. No se comparten con otros
+usuarios y todavía no existe autenticación.
 
 ## Guardar el progreso con Git y GitHub
 

@@ -5,10 +5,18 @@ Primera versión implementada: página principal, feed de tres publicaciones fic
 y perfil de ejemplo en la barra lateral. Revisión visual manual completada por
 el usuario, quien confirmó que la pantalla se ve bien.
 Selección y previsualización de fotografías implementadas con aprobación del usuario.
-La vista previa ahora incluye una descripción opcional, sin guardar ni publicar.
-El usuario confirmó que este cambio se ve bien y realizó el commit local.
+La vista previa incluye una descripción opcional, revisada por el usuario y guardada
+en un commit local. Ahora el botón Publicar añade foto y descripción al feed durante
+la sesión, sin persistencia permanente.
+El usuario comprobó satisfactoriamente la publicación con y sin descripción,
+el orden de las publicaciones y su pérdida al recargar la página.
 
 ## Completado
+- Revisión manual confirmada por el usuario: publicar con y sin descripción, nuevas publicaciones primero y eliminación de publicaciones temporales al recargar
+- Botón Publicar aprobado e implementado con st.session_state; nuevas publicaciones al principio del feed bajo el perfil ficticio
+- Imagen almacenada como bytes en memoria, independiente del archivo del selector; descripción opcional copiada al publicar
+- AppTest: bloqueo sin imagen y con archivo inválido, publicación, orden, conservación al editar y retirar archivo, y sesión nueva vacía; sin excepciones (selector simulado)
+- Regla explícita en AGENTS.md: actualizar PROGRESS.md siempre que haya cambios
 - Revisión visual de la descripción confirmada por el usuario; commit local verificado: 693376c (Añadir descripción opcional a la vista previa)
 - Campo de descripción opcional con st.text_area y texto debajo de una vista previa válida
 - AppTest: descripción vacía, espacios, texto con varias líneas y texto literal; sin foto y archivo inválido; sin excepciones (selector de archivo simulado)
@@ -31,10 +39,9 @@ El usuario confirmó que este cambio se ve bien y realizó el commit local.
 - Verificación con Streamlit AppTest: ejecución sin excepciones, título y aviso comprobados
 
 ## En progreso
-- Esperando aprobación del usuario para publicar temporalmente en el feed
+- Esperando acuerdo y aprobación del siguiente incremento
 
 ## Pendiente
-- Aprobar el botón Publicar y las publicaciones temporales con st.session_state
 - Implementar persistencia
 - Implementar autenticación
 
@@ -47,7 +54,4 @@ confirmado por separado las pruebas de sustitución, eliminación y archivo inv�
 en el navegador; las pruebas automatizadas utilizaron archivos simulados.
 
 ## Próxima tarea
-Propuesta pendiente de aprobación: añadir un botón Publicar, validar que exista
-una imagen válida y añadir la foto con su descripción al principio del feed mediante
-st.session_state. Las publicaciones se conservarán solo durante la sesión, sin
-persistencia en disco ni base de datos. Pedir aprobación antes de implementar.
+Proponer un incremento pequeño y pedir aprobación antes de implementarlo.

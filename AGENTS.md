@@ -18,6 +18,7 @@ Estoy aprendiendo a crear aplicaciones con ayuda de ChatGPT y Codex.
 9. Si encuentras errores, explica la causa.
 10. Consulta PROJECT.md y PROGRESS.md antes de comenzar cada tarea.
 11. No alucines nada.
+12. Actualiza PROGRESS.md siempre que haya cambios; distingue lo implementado, lo verificado y lo pendiente de aprobación.
 
 ## Al terminar cada tarea
 - Resume lo realizado.

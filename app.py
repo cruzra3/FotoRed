@@ -3,6 +3,9 @@ import streamlit as st
 
 st.set_page_config(page_title="FotoRed", page_icon="📷", layout="centered")
 
+if "publicaciones_sesion" not in st.session_state:
+    st.session_state.publicaciones_sesion = []
+
 perfil = {
     "nombre": "Ana Rivera",
     "usuario": "ana_fotos",
@@ -20,10 +23,10 @@ st.title("📷 FotoRed")
 st.subheader("Un espacio para compartir tus fotografías")
 st.write("¡Bienvenido a FotoRed! Estamos construyendo esta aplicación paso a paso.")
 
-st.info("Prototipo de aprendizaje: todavía no permite publicar fotografías ni crear cuentas.")
+st.info("Prototipo de aprendizaje: las publicaciones solo duran durante la sesión. No hay cuentas reales.")
 
 st.header("Previsualizar una fotografía")
-st.caption("Selecciona un JPG o PNG. Solo se mostrará una vista previa; no se guardará ni publicará.")
+st.caption("Selecciona un JPG o PNG y pulsa Publicar para añadirlo al feed de esta sesión.")
 
 foto = st.file_uploader("Selecciona una fotografía", type=["jpg", "jpeg", "png"])
 descripcion = st.text_area(
@@ -31,15 +34,32 @@ descripcion = st.text_area(
     placeholder="Ejemplo: Una tarde explorando la naturaleza.",
 )
 
+imagen_valida = False
 if foto is not None:
     try:
-        st.image(foto, caption="Vista previa de tu fotografía", width="stretch")
+        datos_foto = foto.getvalue()
+        st.image(datos_foto, caption="Vista previa de tu fotografía", width="stretch")
+        imagen_valida = True
         if descripcion.strip():
             st.text(descripcion)
     except (OSError, ValueError):
         st.error("No se pudo leer la imagen. Selecciona un archivo JPG o PNG válido.")
 
-st.header("Publicaciones de ejemplo")
+if st.button("Publicar"):
+    if imagen_valida:
+        st.session_state.publicaciones_sesion.insert(
+            0,
+            {
+                "usuario": perfil["usuario"],
+                "imagen": datos_foto,
+                "descripcion": descripcion.strip(),
+            },
+        )
+        st.success("Fotografía publicada durante esta sesión.")
+    else:
+        st.warning("Selecciona una fotografía válida antes de publicar.")
+
+st.header("Feed de publicaciones")
 st.caption("Usuarios ficticios y fotos de muestra de Picsum. Las imágenes requieren Internet.")
 
 publicaciones = [
@@ -60,8 +80,9 @@ publicaciones = [
     },
 ]
 
-for publicacion in publicaciones:
+for publicacion in st.session_state.publicaciones_sesion + publicaciones:
     with st.container(border=True):
         st.subheader(f"@{publicacion['usuario']}")
         st.image(publicacion["imagen"], width="stretch")
-        st.write(publicacion["descripcion"])
+        if publicacion["descripcion"]:
+            st.text(publicacion["descripcion"])
