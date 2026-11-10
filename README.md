@@ -34,8 +34,8 @@ Las fotografías de muestra se cargan desde Picsum y requieren conexión a Inter
 Streamlit utilizada. Este es un prototipo de aprendizaje, no una aplicación lista
 para producción. Incluye un feed y un perfil ficticio en la barra lateral, con
 nombre, usuario y biografía. Si la barra está oculta, ábrela con el control de
-Streamlit en la esquina superior izquierda. Todavía no incluye autenticación
-ni persistencia.
+Streamlit en la esquina superior izquierda. Incluye persistencia local con SQLite,
+pero todavía no incluye autenticación.
 
 ## Previsualizar una fotografía
 
@@ -55,10 +55,28 @@ del feed, con el usuario ficticio del perfil. Sin una foto válida aparecerá un
 La descripción es opcional. Cada clic válido crea una publicación; cambiar el texto
 o quitar el archivo del selector no elimina lo ya publicado.
 
-Esta función es una demostración: st.session_state conserva las publicaciones
-en memoria durante la sesión, sin escribirlas en disco ni en una base de datos.
-Al recargar la página o reiniciar la sesión se pierden. No se comparten con otros
-usuarios y todavía no existe autenticación.
+## Publicaciones guardadas con SQLite
+
+`database.py` crea automáticamente `FotoRed/data/fotored.sqlite3`. Al publicar,
+guarda el usuario ficticio, la descripción y los bytes de la imagen en una tabla.
+La base de datos se ubica junto al código aunque ejecutes Streamlit desde otra
+carpeta. Se utiliza sqlite3, incluido en Python; no requiere instalar otro paquete.
+
+Las publicaciones guardadas aparecen antes de las fotos de ejemplo, con las más
+recientes primero. Permanecen al recargar o reiniciar Streamlit, siempre que se
+conserve el archivo de la base de datos. Las publicaciones de la versión anterior
+que solo estaban en memoria no se migran.
+
+Para comprobarlo, publica una foto, recarga la página y después detén Streamlit
+con Ctrl+C y ejecútalo de nuevo. La foto y su descripción deben seguir en el feed.
+Prueba también una publicación sin descripción.
+
+La carpeta `data/` está excluida de Git: los commits guardan el código, no las fotos
+ni la base de datos. Para respaldar los datos, detén la aplicación y copia
+`data/fotored.sqlite3` a un lugar seguro.
+
+Sigue siendo un prototipo local sin autenticación. Las sesiones que usan la misma
+base de datos ven las mismas publicaciones; todavía no hay privacidad por usuario.
 
 ## Guardar el progreso con Git y GitHub
 

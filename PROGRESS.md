@@ -6,12 +6,19 @@ y perfil de ejemplo en la barra lateral. Revisión visual manual completada por
 el usuario, quien confirmó que la pantalla se ve bien.
 Selección y previsualización de fotografías implementadas con aprobación del usuario.
 La vista previa incluye una descripción opcional, revisada por el usuario y guardada
-en un commit local. Ahora el botón Publicar añade foto y descripción al feed durante
-la sesión, sin persistencia permanente.
+en un commit local. Ahora el botón Publicar guarda foto, descripción y usuario
+ficticio en SQLite, conservándolos tras recargar o reiniciar la aplicación.
 El usuario comprobó satisfactoriamente la publicación con y sin descripción,
-el orden de las publicaciones y su pérdida al recargar la página.
+el orden de las publicaciones y su pérdida al recargar la página en la versión
+anterior de publicaciones temporales. La nueva persistencia está pendiente de
+revisión manual.
 
 ## Completado
+- Persistencia local con SQLite aprobada e implementada en database.py; tabla creada automáticamente y fotos almacenadas como BLOB
+- Feed lee las publicaciones guardadas por id descendente antes de las fotografías de ejemplo
+- Consultas con parámetros y conexiones cerradas tras cada operación; mensajes de error al abrir, guardar o leer
+- data/ excluida de Git; README actualizado con ubicación de la base, comprobación y respaldo
+- Verificación con BD temporal y AppTest: publicación con/sin descripción, bytes y Unicode conservados, orden, persistencia en sesión nueva, rechazo sin foto o con archivo inválido y error de guardado sin falso éxito (selector simulado)
 - Revisión manual confirmada por el usuario: publicar con y sin descripción, nuevas publicaciones primero y eliminación de publicaciones temporales al recargar
 - Botón Publicar aprobado e implementado con st.session_state; nuevas publicaciones al principio del feed bajo el perfil ficticio
 - Imagen almacenada como bytes en memoria, independiente del archivo del selector; descripción opcional copiada al publicar
@@ -39,19 +46,24 @@ el orden de las publicaciones y su pérdida al recargar la página.
 - Verificación con Streamlit AppTest: ejecución sin excepciones, título y aviso comprobados
 
 ## En progreso
-- Esperando acuerdo y aprobación del siguiente incremento
+- Revisión manual de la persistencia local con SQLite
 
 ## Pendiente
-- Implementar persistencia
+- Confirmar en el navegador que las publicaciones permanecen al recargar y reiniciar Streamlit
 - Implementar autenticación
 
 ## Problemas conocidos
 Ninguno reportado tras la verificación con AppTest y la revisión visual del usuario.
 Las fotografías externas de Picsum requieren Internet. El prototipo no está listo
 para producción.
+La base local no se sube con Git y necesita respaldo separado. No hay autenticación:
+las sesiones que comparten la base pueden ver las mismas publicaciones. Las pruebas
+de persistencia usaron una base temporal, sin crear datos de prueba en la base real.
 El usuario confirmó la revisión visual del selector y la vista previa. No se han
 confirmado por separado las pruebas de sustitución, eliminación y archivo inválido
 en el navegador; las pruebas automatizadas utilizaron archivos simulados.
 
 ## Próxima tarea
-Proponer un incremento pequeño y pedir aprobación antes de implementarlo.
+Revisar manualmente la persistencia de publicaciones con y sin descripción tras
+recargar y reiniciar Streamlit. Después, proponer un incremento pequeño y pedir
+aprobación antes de implementarlo.

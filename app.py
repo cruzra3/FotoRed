@@ -1,10 +1,16 @@
 import streamlit as st
+import sqlite3
+
+from database import inicializar_bd, guardar_publicacion, obtener_publicaciones
 
 
 st.set_page_config(page_title="FotoRed", page_icon="📷", layout="centered")
 
-if "publicaciones_sesion" not in st.session_state:
-    st.session_state.publicaciones_sesion = []
+try:
+    inicializar_bd()
+except (sqlite3.Error, OSError):
+    st.error("No se pudo abrir la base de datos local. Comprueba los permisos de la carpeta data.")
+    st.stop()
 
 perfil = {
     "nombre": "Ana Rivera",
@@ -23,10 +29,10 @@ st.title("📷 FotoRed")
 st.subheader("Un espacio para compartir tus fotografías")
 st.write("¡Bienvenido a FotoRed! Estamos construyendo esta aplicación paso a paso.")
 
-st.info("Prototipo de aprendizaje: las publicaciones solo duran durante la sesión. No hay cuentas reales.")
+st.info("Prototipo de aprendizaje: las publicaciones se guardan localmente con SQLite. No hay cuentas reales.")
 
 st.header("Previsualizar una fotografía")
-st.caption("Selecciona un JPG o PNG y pulsa Publicar para añadirlo al feed de esta sesión.")
+st.caption("Selecciona un JPG o PNG y pulsa Publicar para guardarlo y añadirlo al feed.")
 
 foto = st.file_uploader("Selecciona una fotografía", type=["jpg", "jpeg", "png"])
 descripcion = st.text_area(
@@ -47,15 +53,12 @@ if foto is not None:
 
 if st.button("Publicar"):
     if imagen_valida:
-        st.session_state.publicaciones_sesion.insert(
-            0,
-            {
-                "usuario": perfil["usuario"],
-                "imagen": datos_foto,
-                "descripcion": descripcion.strip(),
-            },
-        )
-        st.success("Fotografía publicada durante esta sesión.")
+        try:
+            guardar_publicacion(perfil["usuario"], datos_foto, descripcion.strip())
+        except sqlite3.Error:
+            st.error("No se pudo guardar la publicación. No se confirmó el guardado.")
+        else:
+            st.success("Fotografía guardada en la base de datos local.")
     else:
         st.warning("Selecciona una fotografía válida antes de publicar.")
 
@@ -80,7 +83,13 @@ publicaciones = [
     },
 ]
 
-for publicacion in st.session_state.publicaciones_sesion + publicaciones:
+try:
+    publicaciones_guardadas = obtener_publicaciones()
+except sqlite3.Error:
+    st.error("No se pudieron leer las publicaciones guardadas.")
+    st.stop()
+
+for publicacion in publicaciones_guardadas + publicaciones:
     with st.container(border=True):
         st.subheader(f"@{publicacion['usuario']}")
         st.image(publicacion["imagen"], width="stretch")

@@ -13,3 +13,6 @@ __pycache__/
 
 # Archivos de macOS
 .DS_Store
+
+# Base de datos local y archivos auxiliares
+data/
