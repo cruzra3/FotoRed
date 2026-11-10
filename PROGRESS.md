@@ -5,8 +5,11 @@ Primera versión implementada: página principal, feed de tres publicaciones fic
 y perfil de ejemplo en la barra lateral. Revisión visual manual completada por
 el usuario, quien confirmó que la pantalla se ve bien.
 Selección y previsualización de fotografías implementadas con aprobación del usuario.
+La vista previa ahora incluye una descripción opcional, sin guardar ni publicar.
 
 ## Completado
+- Campo de descripción opcional con st.text_area y texto debajo de una vista previa válida
+- AppTest: descripción vacía, espacios, texto con varias líneas y texto literal; sin foto y archivo inválido; sin excepciones (selector de archivo simulado)
 - El usuario confirmó que la selección y vista previa se ven bien; commit local verificado: cb6080e (Añadir selección y vista previa de fotografías)
 - Selector JPG/JPEG/PNG y vista previa, sin persistencia ni publicación en el feed
 - Manejo de archivos cuyo contenido no es una imagen válida
@@ -26,7 +29,7 @@ Selección y previsualización de fotografías implementadas con aprobación del
 - Verificación con Streamlit AppTest: ejecución sin excepciones, título y aviso comprobados
 
 ## En progreso
-- Esperando aprobación del siguiente incremento
+- Revisión visual manual del campo de descripción y su vista previa
 
 ## Pendiente
 - Implementar persistencia
@@ -41,6 +44,5 @@ confirmado por separado las pruebas de sustitución, eliminación y archivo inv�
 en el navegador; las pruebas automatizadas utilizaron archivos simulados.
 
 ## Próxima tarea
-Propuesta pendiente de aprobación: añadir un campo de descripción junto a la foto
-seleccionada y mostrar ese texto en la vista previa, sin guardar ni publicar.
-Pedir aprobación antes de implementar.
+Revisar manualmente la descripción junto a la fotografía seleccionada. Después,
+proponer un incremento pequeño y pedir aprobación antes de implementarlo.

@@ -39,6 +39,12 @@ ni persistencia.
 
 ## Previsualizar una fotografía
 
+Puedes escribir una descripción opcional en el campo de texto. Con una fotografía
+válida seleccionada, el texto aparece debajo de la vista previa. Para actualizarlo,
+haz clic fuera del campo después de escribir. Si queda vacío o solo contiene
+espacios, no se muestra una descripción. El texto se muestra literalmente, sin
+interpretar Markdown, y tampoco se guarda ni publica.
+
 En la sección «Previsualizar una fotografía», selecciona un archivo JPG, JPEG o
 PNG de tu computadora. Aparecerá su vista previa encima del feed. Puedes cambiar
 el archivo o quitarlo usando el selector. Si el contenido no es una imagen válida,

@@ -26,10 +26,16 @@ st.header("Previsualizar una fotografía")
 st.caption("Selecciona un JPG o PNG. Solo se mostrará una vista previa; no se guardará ni publicará.")
 
 foto = st.file_uploader("Selecciona una fotografía", type=["jpg", "jpeg", "png"])
+descripcion = st.text_area(
+    "Descripción de la fotografía (opcional)",
+    placeholder="Ejemplo: Una tarde explorando la naturaleza.",
+)
 
 if foto is not None:
     try:
         st.image(foto, caption="Vista previa de tu fotografía", width="stretch")
+        if descripcion.strip():
+            st.text(descripcion)
     except (OSError, ValueError):
         st.error("No se pudo leer la imagen. Selecciona un archivo JPG o PNG válido.")
 
