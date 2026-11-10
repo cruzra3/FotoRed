@@ -10,10 +10,11 @@ en un commit local. Ahora el botón Publicar guarda foto, descripción y usuario
 ficticio en SQLite, conservándolos tras recargar o reiniciar la aplicación.
 El usuario comprobó satisfactoriamente la publicación con y sin descripción,
 el orden de las publicaciones y su pérdida al recargar la página en la versión
-anterior de publicaciones temporales. La nueva persistencia está pendiente de
-revisión manual.
+anterior de publicaciones temporales. Después confirmó que la versión con SQLite
+se ve bien y realizó el commit local.
 
 ## Completado
+- Revisión de SQLite confirmada por el usuario; commit local verificado: 5cf8669 (Guardar publicaciones localmente con SQLite)
 - Persistencia local con SQLite aprobada e implementada en database.py; tabla creada automáticamente y fotos almacenadas como BLOB
 - Feed lee las publicaciones guardadas por id descendente antes de las fotografías de ejemplo
 - Consultas con parámetros y conexiones cerradas tras cada operación; mensajes de error al abrir, guardar o leer
@@ -46,10 +47,10 @@ revisión manual.
 - Verificación con Streamlit AppTest: ejecución sin excepciones, título y aviso comprobados
 
 ## En progreso
-- Revisión manual de la persistencia local con SQLite
+- Esperando aprobación para iniciar el registro de usuarios
 
 ## Pendiente
-- Confirmar en el navegador que las publicaciones permanecen al recargar y reiniciar Streamlit
+- Aprobar un primer paso de autenticación: registro de usuarios con nombre único y contraseña protegida
 - Implementar autenticación
 
 ## Problemas conocidos
@@ -64,6 +65,7 @@ confirmado por separado las pruebas de sustitución, eliminación y archivo inv�
 en el navegador; las pruebas automatizadas utilizaron archivos simulados.
 
 ## Próxima tarea
-Revisar manualmente la persistencia de publicaciones con y sin descripción tras
-recargar y reiniciar Streamlit. Después, proponer un incremento pequeño y pedir
-aprobación antes de implementarlo.
+Propuesta pendiente de aprobación: crear un formulario de registro y una tabla de
+usuarios en SQLite, con nombres únicos y contraseñas almacenadas mediante hash
+con sal, nunca en texto plano. El inicio de sesión y la asociación de publicaciones
+a cuentas reales se abordarán después. Pedir aprobación antes de implementar.
