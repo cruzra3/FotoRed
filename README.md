@@ -37,6 +37,17 @@ nombre, usuario y biografía. Si la barra está oculta, ábrela con el control d
 Streamlit en la esquina superior izquierda. Todavía no incluye autenticación
 ni persistencia.
 
+## Previsualizar una fotografía
+
+En la sección «Previsualizar una fotografía», selecciona un archivo JPG, JPEG o
+PNG de tu computadora. Aparecerá su vista previa encima del feed. Puedes cambiar
+el archivo o quitarlo usando el selector. Si el contenido no es una imagen válida,
+se mostrará un aviso.
+
+Esta función es una demostración: no guarda la fotografía en disco ni en una base
+de datos y no la añade al feed. La imagen seleccionada se procesa temporalmente
+para mostrarla; no hay un botón de publicar.
+
 ## Guardar el progreso con Git y GitHub
 
 Git guarda versiones del proyecto mediante **commits** en tu computadora.

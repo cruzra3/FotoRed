@@ -22,6 +22,17 @@ st.write("¡Bienvenido a FotoRed! Estamos construyendo esta aplicación paso a p
 
 st.info("Prototipo de aprendizaje: todavía no permite publicar fotografías ni crear cuentas.")
 
+st.header("Previsualizar una fotografía")
+st.caption("Selecciona un JPG o PNG. Solo se mostrará una vista previa; no se guardará ni publicará.")
+
+foto = st.file_uploader("Selecciona una fotografía", type=["jpg", "jpeg", "png"])
+
+if foto is not None:
+    try:
+        st.image(foto, caption="Vista previa de tu fotografía", width="stretch")
+    except (OSError, ValueError):
+        st.error("No se pudo leer la imagen. Selecciona un archivo JPG o PNG válido.")
+
 st.header("Publicaciones de ejemplo")
 st.caption("Usuarios ficticios y fotos de muestra de Picsum. Las imágenes requieren Internet.")
 
