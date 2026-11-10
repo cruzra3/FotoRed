@@ -7,6 +7,7 @@ el usuario, quien confirmó que la pantalla se ve bien.
 Selección y previsualización de fotografías implementadas con aprobación del usuario.
 
 ## Completado
+- El usuario confirmó que la selección y vista previa se ven bien; commit local verificado: cb6080e (Añadir selección y vista previa de fotografías)
 - Selector JPG/JPEG/PNG y vista previa, sin persistencia ni publicación en el feed
 - Manejo de archivos cuyo contenido no es una imagen válida
 - Verificación con AppTest: inicio sin archivo y feed conservado; vistas previas JPEG y PNG y aviso de archivo inválido con selector simulado
@@ -25,10 +26,9 @@ Selección y previsualización de fotografías implementadas con aprobación del
 - Verificación con Streamlit AppTest: ejecución sin excepciones, título y aviso comprobados
 
 ## En progreso
-- Revisión manual del selector de fotografías y su vista previa
+- Esperando aprobación del siguiente incremento
 
 ## Pendiente
-- Comprobar en el navegador la selección, sustitución y eliminación de una fotografía
 - Implementar persistencia
 - Implementar autenticación
 
@@ -36,9 +36,11 @@ Selección y previsualización de fotografías implementadas con aprobación del
 Ninguno reportado tras la verificación con AppTest y la revisión visual del usuario.
 Las fotografías externas de Picsum requieren Internet. El prototipo no está listo
 para producción.
-La carga mediante el selector real del navegador queda pendiente de revisión manual;
-las comprobaciones automatizadas de la vista previa simularon el archivo seleccionado.
+El usuario confirmó la revisión visual del selector y la vista previa. No se han
+confirmado por separado las pruebas de sustitución, eliminación y archivo inválido
+en el navegador; las pruebas automatizadas utilizaron archivos simulados.
 
 ## Próxima tarea
-Revisar manualmente el selector y la vista previa. Después, proponer un incremento
-pequeño y pedir aprobación antes de aplicarlo.
+Propuesta pendiente de aprobación: añadir un campo de descripción junto a la foto
+seleccionada y mostrar ese texto en la vista previa, sin guardar ni publicar.
+Pedir aprobación antes de implementar.
