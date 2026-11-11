@@ -1,9 +1,10 @@
 # PROGRESS.md
 
 ## Estado actual
-Registro local de usuarios implementado. Aún no hay inicio de sesión ni asociación
-de publicaciones con cuentas reales. El usuario confirmó que está satisfecho con
-las pruebas del registro.
+Etapa 1 de 4 implementada: inicio y cierre de sesión y publicaciones vinculadas
+al identificador de la cuenta conectada. Las publicaciones anteriores se conservan
+como contenido de ejemplo, sin asignarlas a cuentas. Pruebas automatizadas pasadas;
+revisión manual aceptada por el usuario, quien confirmó que las pruebas funcionan.
 
 Primera versión implementada: página principal, feed de tres publicaciones ficticias
 y perfil de ejemplo en la barra lateral. Revisión visual manual completada por
@@ -17,7 +18,24 @@ el orden de las publicaciones y su pérdida al recargar la página en la versió
 anterior de publicaciones temporales. Después confirmó que la versión con SQLite
 se ve bien y realizó el commit local.
 
+## Plan de cierre en cuatro etapas
+1. Sesiones y autoría: implementada y aceptada por el usuario tras sus pruebas.
+2. Perfiles y búsqueda: pendiente de aprobación e implementación.
+3. Likes, comentarios y seguimiento: pendiente de aprobación e implementación.
+4. Feed de seguidos, navegación y revisión final: pendiente de aprobación e implementación.
+
 ## Completado
+- El usuario confirmó que sus pruebas de la etapa 1 y del flujo de acceso/registro funcionan; pendiente de guardar este cierre con commit local
+- Flujo de acceso separado: alternancia entre login y registro; al autenticar se ocultan ambos formularios
+- Errores conservan entradas; cambiar de formulario limpia credenciales; registro exitoso vuelve al login con confirmación
+- Consulta a páginas oficiales de Instagram bloqueada por HTTP 429; adaptación de flujo para FotoRed sin afirmar copia exacta ni verificación de la interfaz actual
+- Cinco pruebas unittest/AppTest pasadas, incluida alternancia, corrección tras error, registro y login posterior y limpieza de contraseñas; BD temporal
+- Etapa 1: verificación PBKDF2 con compare_digest, identidad en st.session_state y cierre de sesión
+- Publicar requiere sesión y cuenta existente; autor obtenido desde SQLite por id
+- Migración repetible añade usuario_id nullable sin modificar filas antiguas; contenido sin autor real etiquetado como ejemplo
+- Editor separado por cuenta y limpieza al salir para evitar arrastrar borradores entre cuentas
+- Cuatro pruebas unittest/AppTest pasadas: credenciales, migración, rechazo de cuenta inexistente y flujo de dos cuentas/publicación/logout/sesión nueva; bases temporales y selector simulado
+- Durante las pruebas se detectó texto retenido al salir; corregido mediante claves del editor por cuenta
 - Revisión manual del registro aceptada por el usuario; listo para guardar este paso mediante commit local
 - Longitud de contraseña de registro ajustada por solicitud del usuario: mínimo 8 y máximo 20 caracteres, en validación, formulario y README
 - Verificación en BD temporal y AppTest: 8 y 20 caracteres aceptados, 7 y 21 rechazados en la función de registro; campo limitado a 20 y mensajes del formulario comprobados
@@ -58,10 +76,11 @@ se ve bien y realizó el commit local.
 - Verificación con Streamlit AppTest: ejecución sin excepciones, título y aviso comprobados
 
 ## En progreso
-- Esperando aprobación para el siguiente paso de inicio de sesión
+- Esperando aprobación para la etapa 2: perfiles y búsqueda
 
 ## Pendiente
-- Implementar inicio de sesión y asociación de publicaciones con cuentas, en pasos posteriores aprobados
+- Guardar commit local de la etapa 1 y su revisión aceptada
+- Etapas 2, 3 y 4 del plan, cada una previa aprobación
 
 ## Problemas conocidos
 - El usuario reportó que pudo registrar una cuenta con la contraseña de 7 caracteres Abcd123.
@@ -72,7 +91,7 @@ se ve bien y realizó el commit local.
   No se modificó la validación ni se borraron cuentas reales.
 Las fotografías externas de Picsum requieren Internet. El prototipo no está listo
 para producción.
-La base local no se sube con Git y necesita respaldo separado. No hay autenticación:
+La base local no se sube con Git y necesita respaldo separado. El feed es público:
 las sesiones que comparten la base pueden ver las mismas publicaciones. Las pruebas
 de persistencia usaron una base temporal, sin crear datos de prueba en la base real.
 El usuario confirmó la revisión visual del selector y la vista previa. No se han
@@ -80,5 +99,4 @@ confirmado por separado las pruebas de sustitución, eliminación y archivo inv�
 en el navegador; las pruebas automatizadas utilizaron archivos simulados.
 
 ## Próxima tarea
-Proponer el inicio de sesión como siguiente incremento y pedir aprobación antes
-de implementarlo.
+Pedir aprobación para la etapa 2: perfiles reales editables y búsqueda de usuarios.

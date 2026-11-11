@@ -32,10 +32,9 @@ Las fotografías de muestra se cargan desde Picsum y requieren conexión a Inter
 
 `app.py` contiene la página principal y `requirements.txt` indica la versión de
 Streamlit utilizada. Este es un prototipo de aprendizaje, no una aplicación lista
-para producción. Incluye un feed y un perfil ficticio en la barra lateral, con
-nombre, usuario y biografía. Si la barra está oculta, ábrela con el control de
-Streamlit en la esquina superior izquierda. Incluye persistencia local con SQLite,
-pero todavía no incluye autenticación.
+para producción. Incluye un feed, registro e inicio de sesión en la barra lateral.
+Si la barra está oculta, ábrela con el control de Streamlit en la esquina superior
+izquierda. Los perfiles editables se incorporarán en la etapa 2.
 
 ## Previsualizar una fotografía
 
@@ -51,14 +50,14 @@ el archivo o quitarlo usando el selector. Si el contenido no es una imagen váli
 se mostrará un aviso.
 
 Pulsa «Publicar» para añadir una copia de la foto y su descripción al principio
-del feed, con el usuario ficticio del perfil. Sin una foto válida aparecerá un aviso.
+del feed, con la cuenta que inició sesión. Sin una foto válida aparecerá un aviso.
 La descripción es opcional. Cada clic válido crea una publicación; cambiar el texto
 o quitar el archivo del selector no elimina lo ya publicado.
 
 ## Publicaciones guardadas con SQLite
 
 `database.py` crea automáticamente `FotoRed/data/fotored.sqlite3`. Al publicar,
-guarda el usuario ficticio, la descripción y los bytes de la imagen en una tabla.
+guarda el identificador de tu cuenta, su nombre, la descripción y los bytes de la imagen.
 La base de datos se ubica junto al código aunque ejecutes Streamlit desde otra
 carpeta. Se utiliza sqlite3, incluido en Python; no requiere instalar otro paquete.
 
@@ -75,19 +74,19 @@ La carpeta `data/` está excluida de Git: los commits guardan el código, no las
 ni la base de datos. Para respaldar los datos, detén la aplicación y copia
 `data/fotored.sqlite3` a un lugar seguro.
 
-Sigue siendo un prototipo local sin autenticación. Las sesiones que usan la misma
+Sigue siendo un prototipo local con inicio de sesión básico. Las sesiones que usan la misma
 base de datos ven las mismas publicaciones; todavía no hay privacidad por usuario.
 
 ## Registro de usuarios (prototipo)
 
-En la barra lateral encontrarás «Registro de usuarios». Introduce un nombre de
+En la barra lateral pulsa «Registrarte». Introduce un nombre de
 3 a 30 letras ASCII, números o guiones bajos, y una contraseña de 8 a 20
 caracteres. Los nombres se guardan en minúsculas y sin espacios en los extremos:
 `Ana` y ` ana ` representan el mismo usuario. La contraseña se conserva exactamente
 al calcular el hash; no se recorta ni transforma.
 
-Pulsa «Crear cuenta». Un nombre repetido muestra un aviso. El formulario limpia
-sus campos después del envío; ante un error tendrás que introducirlos otra vez.
+Pulsa «Crear cuenta». Un nombre repetido muestra un aviso. Ante un error, el formulario conserva los datos para corregirlos. Al crear
+la cuenta, vuelve a Iniciar sesión con un aviso de confirmación y limpia el registro.
 La tabla usuarios se crea sin borrar las publicaciones existentes.
 
 Se almacena un hash PBKDF2-HMAC-SHA256 con 600 000 iteraciones y una sal aleatoria
@@ -100,9 +99,63 @@ nombre en mayúsculas: debe indicar que ya existe. Prueba también campos vacío
 y una contraseña corta. Una vez creada la cuenta, recarga e intenta registrarla
 otra vez para comprobar su persistencia.
 
-Este es un registro local de aprendizaje. Todavía no existe inicio de sesión,
-recuperación de cuentas ni vínculo entre las cuentas y las publicaciones. El perfil
-ficticio sigue siendo el autor al publicar. No está listo para producción.
+## Flujo de acceso
+
+Se muestra un formulario a la vez: «Iniciar sesión» o «Crear una cuenta».
+Los botones «Registrarte» e «Iniciar sesión» permiten alternar. Al cambiar de vista
+se limpian los datos de ambos formularios. Los errores conservan lo escrito para
+corregirlo. Tras registrar la cuenta se vuelve al acceso, sin iniciar sesión
+automáticamente. Una vez dentro solo se muestra la cuenta y «Cerrar sesión».
+
+Es una adaptación para FotoRed del patrón de acceso/registro separado. Instagram
+respondió con HTTP 429 al intentar consultar sus páginas oficiales de acceso,
+registro y ayuda; no se verificó su interfaz actual exacta. No se presenta esta
+adaptación como una réplica exacta. FotoRed usa únicamente usuario y contraseña;
+no incluye correo/teléfono, verificación por códigos, Facebook ni recuperación.
+
+## Etapa 1: sesiones y autoría
+
+Tras crear una cuenta, utiliza «Iniciar sesión» y pulsa «Entrar». Las cuentas
+existentes siguen funcionando. El usuario se normaliza como en el registro, pero
+la contraseña se verifica exactamente como fue escrita. El inicio de sesión no
+impone el nuevo máximo de registro a contraseñas de cuentas creadas anteriormente.
+Se recalcula PBKDF2 con la sal guardada y se compara con hmac.compare_digest:
+[documentación de Python](https://docs.python.org/3/library/hmac.html#hmac.compare_digest).
+
+La barra lateral muestra la cuenta conectada y «Cerrar sesión». Se guarda solo
+su identificador y nombre en st.session_state, sin guardar su contraseña como parte
+de la identidad de sesión. Al recargar la página se pierde la sesión y debes entrar
+otra vez; las publicaciones guardadas siguen visibles.
+
+Puedes ver el feed y previsualizar sin entrar. Publicar requiere una sesión y una
+cuenta existente. La base obtiene el nombre a partir del id de esa cuenta. Al cerrar
+sesión se limpia el estado del editor; al cambiar de cuenta no se reutiliza el borrador.
+
+La migración añade usuario_id a publicaciones sin borrar filas ni asignar publicaciones
+antiguas a cuentas por coincidencia de nombre. Las antiguas y las fotos fijas llevan
+la etiqueta «Contenido de ejemplo · sin cuenta asociada». Las nuevas quedan vinculadas
+a su autor real. Por ello, no uses DELETE FROM usuarios para limpiar cuentas con
+publicaciones asociadas; la eliminación de cuentas no está implementada.
+
+Comprobación manual:
+
+- Sin entrar, el feed es visible y Publicar está deshabilitado.
+- Contraseña incorrecta o usuario inexistente: aparece el mismo aviso de credenciales.
+- Entra con una cuenta existente, publica y verifica su nombre en el feed.
+- Cierra sesión: desaparece tu identidad, se limpia el editor y Publicar se deshabilita.
+- Entra con otra cuenta y publica: debe aparecer el segundo autor.
+- Recarga: se pierde la sesión, las publicaciones y autores se conservan.
+- Las publicaciones anteriores siguen visibles como contenido de ejemplo.
+
+Pruebas automatizadas desde Projects:
+
+```bash
+env/bin/python -m unittest discover -s FotoRed/tests -v
+```
+
+Usan bases temporales y simulan el selector de imágenes. Es un prototipo para uso
+local: todavía no tiene recuperación de cuentas, protección frente a intentos
+repetidos de acceso ni sesiones persistentes para un despliegue público.
 
 ## Guardar el progreso con Git y GitHub
 
