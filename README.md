@@ -34,7 +34,7 @@ Las fotografías de muestra se cargan desde Picsum y requieren conexión a Inter
 Streamlit utilizada. Este es un prototipo de aprendizaje, no una aplicación lista
 para producción. Incluye un feed, registro e inicio de sesión en la barra lateral.
 Si la barra está oculta, ábrela con el control de Streamlit en la esquina superior
-izquierda. Los perfiles editables se incorporarán en la etapa 2.
+izquierda. Incluye perfiles editables y búsqueda de cuentas.
 
 ## Previsualizar una fotografía
 
@@ -156,6 +156,33 @@ env/bin/python -m unittest discover -s FotoRed/tests -v
 Usan bases temporales y simulan el selector de imágenes. Es un prototipo para uso
 local: todavía no tiene recuperación de cuentas, protección frente a intentos
 repetidos de acceso ni sesiones persistentes para un despliegue público.
+
+## Etapa 2: perfiles y búsqueda
+
+Con sesión iniciada, pulsa «Mi perfil». En «Editar mi perfil» puedes guardar un
+nombre para mostrar (hasta 60 caracteres) y una biografía (hasta 150). Ambos son
+opcionales; si el nombre visible está vacío, se muestra el usuario. El nombre de
+usuario y la contraseña no se cambian desde este formulario.
+
+La migración añade nombre_visible y biografia a usuarios con valores vacíos,
+sin borrar cuentas, hashes ni publicaciones. No hace falta crear una base nueva.
+
+En la barra lateral, escribe en «Usuario o nombre». La búsqueda funciona también
+sin sesión, encuentra coincidencias parciales sin distinguir mayúsculas y maneja
+letras acentuadas (Á coincide con á; a no equivale a á). Los signos % y _ son
+literales. Una consulta vacía no lista cuentas.
+
+Pulsa un resultado para visitar el perfil, o «Ver perfil» en una publicación con
+autor real. Solo se muestran las publicaciones cuyo usuario_id coincide con el
+perfil, de más reciente a más antigua. El contenido de ejemplo sin cuenta no se
+asigna a perfiles por coincidencia de nombre. Si no hay publicaciones, se muestra
+un aviso. «Volver al feed» regresa a la página principal.
+
+El editor solo se muestra para la cuenta conectada. El UPDATE toma el id de la
+sesión, no el del perfil visitado. Las consultas de perfil y búsqueda no devuelven
+hashes de contraseñas. Los perfiles y publicaciones siguen siendo públicos en
+este prototipo local; fotos de perfil y edición del nombre de usuario quedan
+fuera de esta etapa.
 
 ## Guardar el progreso con Git y GitHub
 

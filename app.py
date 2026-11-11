@@ -1,7 +1,7 @@
 import streamlit as st
 import sqlite3
 
-from database import inicializar_bd, guardar_publicacion, obtener_publicaciones, registrar_usuario, autenticar_usuario
+from database import inicializar_bd, guardar_publicacion, obtener_publicaciones, registrar_usuario, autenticar_usuario, obtener_perfil, actualizar_perfil, buscar_usuarios
 
 
 st.set_page_config(page_title="FotoRed", page_icon="📷", layout="centered")
@@ -24,10 +24,32 @@ def cambiar_formulario(vista):
 if "vista_acceso" not in st.session_state:
     st.session_state.vista_acceso = "login"
 
+def abrir_perfil(usuario_id):
+    st.session_state.perfil_visitado = usuario_id
+
+
+def mostrar_publicaciones(publicaciones):
+    for publicacion in publicaciones:
+        with st.container(border=True):
+            st.subheader(f"@{publicacion['usuario']}")
+            if publicacion.get("usuario_id") is None:
+                st.caption("Contenido de ejemplo · sin cuenta asociada")
+            else:
+                st.button(
+                    "Ver perfil", key=f"autor_{publicacion['id']}",
+                    on_click=abrir_perfil, args=(publicacion["usuario_id"],),
+                )
+            st.image(publicacion["imagen"], width="stretch")
+            if publicacion["descripcion"]:
+                st.text(publicacion["descripcion"])
+
+
 with st.sidebar:
     if st.session_state.usuario_actual is not None:
         st.header("Tu cuenta")
         st.subheader(f"@{st.session_state.usuario_actual['nombre']}")
+        st.button("Mi perfil", key="mi_perfil", on_click=abrir_perfil,
+                  args=(st.session_state.usuario_actual["id"],))
         if st.button("Cerrar sesión", key="salir"):
             st.session_state.clear()
             st.rerun()
@@ -86,11 +108,71 @@ with st.sidebar:
             st.write("¿Ya tienes una cuenta?")
             st.button("Iniciar sesión", on_click=cambiar_formulario, args=("login",))
 
+    st.divider()
+    st.header("Buscar usuarios")
+    busqueda = st.text_input("Usuario o nombre", key="buscar_usuario")
+    if busqueda.strip():
+        try:
+            resultados = buscar_usuarios(busqueda)
+        except sqlite3.Error:
+            st.error("No se pudo realizar la búsqueda.")
+        else:
+            if not resultados:
+                st.info("No se encontraron usuarios.")
+            for resultado in resultados:
+                etiqueta = resultado["nombre_visible"] or resultado["nombre"]
+                st.button(f"{etiqueta} (@{resultado['nombre']})",
+                          key=f"resultado_{resultado['id']}",
+                          on_click=abrir_perfil, args=(resultado["id"],))
+    st.button("Volver al feed", key="volver_feed", on_click=abrir_perfil, args=(None,))
+
 st.title("📷 FotoRed")
 st.subheader("Un espacio para compartir tus fotografías")
 st.write("¡Bienvenido a FotoRed! Estamos construyendo esta aplicación paso a paso.")
 
 st.info("Prototipo local: inicia sesión para publicar con tu cuenta. El feed es visible para todos.")
+
+perfil_visitado = st.session_state.get("perfil_visitado")
+if perfil_visitado is not None:
+    try:
+        perfil = obtener_perfil(perfil_visitado)
+        publicaciones_perfil = obtener_publicaciones(perfil_visitado)
+    except sqlite3.Error:
+        st.error("No se pudo cargar el perfil.")
+        st.stop()
+    if perfil is None:
+        st.warning("Este usuario ya no existe.")
+        st.stop()
+    st.header(f"Perfil de @{perfil['nombre']}")
+    st.text(perfil["nombre_visible"] or perfil["nombre"])
+    st.text(perfil["biografia"] or "Sin biografía todavía.")
+    cuenta = st.session_state.usuario_actual
+    if cuenta is not None and cuenta["id"] == perfil["id"]:
+        with st.expander("Editar mi perfil"):
+            with st.form(f"editar_perfil_{cuenta['id']}"):
+                nombre_visible = st.text_input(
+                    "Nombre para mostrar", value=perfil["nombre_visible"], max_chars=60,
+                )
+                biografia = st.text_area("Biografía", value=perfil["biografia"], max_chars=150)
+                guardar_perfil = st.form_submit_button("Guardar perfil")
+            if guardar_perfil:
+                try:
+                    # El destino siempre es la cuenta de sesión, nunca el perfil visitado.
+                    actualizar_perfil(cuenta["id"], nombre_visible, biografia)
+                except ValueError as error:
+                    st.error(str(error))
+                except sqlite3.Error:
+                    st.error("No se pudo guardar el perfil.")
+                else:
+                    st.session_state.aviso_perfil = "Perfil actualizado."
+                    st.rerun()
+        if "aviso_perfil" in st.session_state:
+            st.success(st.session_state.pop("aviso_perfil"))
+    st.subheader("Publicaciones de este usuario")
+    if not publicaciones_perfil:
+        st.info("Este usuario todavía no tiene publicaciones.")
+    mostrar_publicaciones(publicaciones_perfil)
+    st.stop()
 
 st.header("Previsualizar una fotografía")
 st.caption("Selecciona un JPG o PNG y pulsa Publicar para guardarlo y añadirlo al feed.")
@@ -163,11 +245,4 @@ except sqlite3.Error:
     st.error("No se pudieron leer las publicaciones guardadas.")
     st.stop()
 
-for publicacion in publicaciones_guardadas + publicaciones:
-    with st.container(border=True):
-        st.subheader(f"@{publicacion['usuario']}")
-        if publicacion.get("usuario_id") is None:
-            st.caption("Contenido de ejemplo · sin cuenta asociada")
-        st.image(publicacion["imagen"], width="stretch")
-        if publicacion["descripcion"]:
-            st.text(publicacion["descripcion"])
+mostrar_publicaciones(publicaciones_guardadas + publicaciones)

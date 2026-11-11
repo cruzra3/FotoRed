@@ -1,10 +1,11 @@
 # PROGRESS.md
 
 ## Estado actual
-Etapa 1 de 4 implementada: inicio y cierre de sesión y publicaciones vinculadas
-al identificador de la cuenta conectada. Las publicaciones anteriores se conservan
-como contenido de ejemplo, sin asignarlas a cuentas. Pruebas automatizadas pasadas;
-revisión manual aceptada por el usuario, quien confirmó que las pruebas funcionan.
+Etapa 2 de 4 implementada: perfiles editables propios, búsqueda y perfiles con
+publicaciones filtradas por autor. Ocho pruebas automatizadas pasadas con bases
+temporales; pendiente de revisión manual de la etapa 2.
+La etapa 1 fue aceptada por el usuario y guardada en el commit local verificado
+905c322 (Completar etapa 1: sesiones, autoría y formularios de acceso).
 
 Primera versión implementada: página principal, feed de tres publicaciones ficticias
 y perfil de ejemplo en la barra lateral. Revisión visual manual completada por
@@ -20,12 +21,18 @@ se ve bien y realizó el commit local.
 
 ## Plan de cierre en cuatro etapas
 1. Sesiones y autoría: implementada y aceptada por el usuario tras sus pruebas.
-2. Perfiles y búsqueda: pendiente de aprobación e implementación.
+2. Perfiles y búsqueda: aprobada e implementada; pendiente de revisión manual.
 3. Likes, comentarios y seguimiento: pendiente de aprobación e implementación.
 4. Feed de seguidos, navegación y revisión final: pendiente de aprobación e implementación.
 
 ## Completado
-- El usuario confirmó que sus pruebas de la etapa 1 y del flujo de acceso/registro funcionan; pendiente de guardar este cierre con commit local
+- Etapa 2: migración repetible añade nombre_visible y biografia sin borrar cuentas, hashes ni publicaciones
+- Edición de nombre visible (60 caracteres) y biografía (150); usuario único sin cambios; actualización dirigida al id de sesión
+- Búsqueda pública por usuario y nombre visible, coincidencias parciales con casefold Unicode y comodines escapados
+- Navegación desde Mi perfil, resultados y autores; Volver al feed; aviso de perfil sin publicaciones o inexistente
+- Publicaciones de cada perfil filtradas por usuario_id; contenido antiguo de ejemplo no atribuido a cuentas
+- Ocho pruebas unittest/AppTest pasadas: perfiles, límites, búsqueda, privacidad del editor, filtrado y navegación, además de los flujos de la etapa 1; bases temporales
+- El usuario confirmó que sus pruebas de la etapa 1 y del flujo de acceso/registro funcionan; commit local verificado: 905c322
 - Flujo de acceso separado: alternancia entre login y registro; al autenticar se ocultan ambos formularios
 - Errores conservan entradas; cambiar de formulario limpia credenciales; registro exitoso vuelve al login con confirmación
 - Consulta a páginas oficiales de Instagram bloqueada por HTTP 429; adaptación de flujo para FotoRed sin afirmar copia exacta ni verificación de la interfaz actual
@@ -76,11 +83,11 @@ se ve bien y realizó el commit local.
 - Verificación con Streamlit AppTest: ejecución sin excepciones, título y aviso comprobados
 
 ## En progreso
-- Esperando aprobación para la etapa 2: perfiles y búsqueda
+- Revisión manual de la etapa 2: perfiles y búsqueda
 
 ## Pendiente
-- Guardar commit local de la etapa 1 y su revisión aceptada
-- Etapas 2, 3 y 4 del plan, cada una previa aprobación
+- Completar checklist manual y guardar commit de etapa 2
+- Etapas 3 y 4 del plan, cada una previa aprobación
 
 ## Problemas conocidos
 - El usuario reportó que pudo registrar una cuenta con la contraseña de 7 caracteres Abcd123.
@@ -99,4 +106,5 @@ confirmado por separado las pruebas de sustitución, eliminación y archivo inv�
 en el navegador; las pruebas automatizadas utilizaron archivos simulados.
 
 ## Próxima tarea
-Pedir aprobación para la etapa 2: perfiles reales editables y búsqueda de usuarios.
+Revisar manualmente perfiles y búsqueda con dos cuentas. Tras aceptar la etapa 2,
+pedir aprobación para la etapa 3: likes, comentarios y seguimiento.

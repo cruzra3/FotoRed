@@ -38,6 +38,11 @@ def inicializar_bd():
                 )
                 """
             )
+            columnas_usuario = {fila[1] for fila in conexion.execute("PRAGMA table_info(usuarios)")}
+            if "nombre_visible" not in columnas_usuario:
+                conexion.execute("ALTER TABLE usuarios ADD COLUMN nombre_visible TEXT NOT NULL DEFAULT ''")
+            if "biografia" not in columnas_usuario:
+                conexion.execute("ALTER TABLE usuarios ADD COLUMN biografia TEXT NOT NULL DEFAULT ''")
 
 
 def registrar_usuario(nombre, contrasena):
@@ -97,10 +102,59 @@ def guardar_publicacion(usuario_id, imagen, descripcion):
             )
 
 
-def obtener_publicaciones():
+def obtener_publicaciones(usuario_id=None):
     with closing(sqlite3.connect(RUTA_BD)) as conexion:
         conexion.row_factory = sqlite3.Row
+        consulta = "SELECT id, usuario, imagen, descripcion, usuario_id FROM publicaciones"
+        parametros = ()
+        if usuario_id is not None:
+            consulta += " WHERE usuario_id = ?"
+            parametros = (usuario_id,)
         filas = conexion.execute(
-            "SELECT id, usuario, imagen, descripcion, usuario_id FROM publicaciones ORDER BY id DESC"
+            consulta + " ORDER BY id DESC", parametros
+        ).fetchall()
+        return [dict(fila) for fila in filas]
+
+
+def obtener_perfil(usuario_id):
+    with closing(sqlite3.connect(RUTA_BD)) as conexion:
+        conexion.row_factory = sqlite3.Row
+        fila = conexion.execute(
+            "SELECT id, nombre, nombre_visible, biografia FROM usuarios WHERE id = ?",
+            (usuario_id,),
+        ).fetchone()
+        return dict(fila) if fila else None
+
+
+def actualizar_perfil(usuario_actual_id, nombre_visible, biografia):
+    nombre_visible = nombre_visible.strip()
+    biografia = biografia.strip()
+    if len(nombre_visible) > 60 or len(biografia) > 150:
+        raise ValueError("El nombre permite hasta 60 caracteres y la biografía hasta 150.")
+    with closing(sqlite3.connect(RUTA_BD)) as conexion:
+        with conexion:
+            cursor = conexion.execute(
+                "UPDATE usuarios SET nombre_visible = ?, biografia = ? WHERE id = ?",
+                (nombre_visible, biografia, usuario_actual_id),
+            )
+            if cursor.rowcount != 1:
+                raise ValueError("La cuenta ya no existe. Vuelve a iniciar sesión.")
+
+
+def buscar_usuarios(texto):
+    texto = texto.strip().casefold()
+    if not texto:
+        return []
+    # Los signos % y _ se buscan literalmente, no como comodines de LIKE.
+    patron = "%" + texto.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_") + "%"
+    with closing(sqlite3.connect(RUTA_BD)) as conexion:
+        conexion.row_factory = sqlite3.Row
+        conexion.create_function("casefold", 1, str.casefold)
+        filas = conexion.execute(
+            """SELECT id, nombre, nombre_visible, biografia FROM usuarios
+               WHERE casefold(nombre) LIKE ? ESCAPE '\\'
+                  OR casefold(nombre_visible) LIKE ? ESCAPE '\\'
+               ORDER BY nombre""",
+            (patron, patron),
         ).fetchall()
         return [dict(fila) for fila in filas]
