@@ -3,7 +3,8 @@
 ## Estado actual
 Etapa 4 de 4 implementada: feed de seguidos, navegación integrada y revisión
 final automatizada. Quince pruebas pasadas con bases temporales; pendiente de
-checklist manual final y commit de cierre. Las ocho funcionalidades previstas
+confirmación del checklist manual final. Etapa 4 guardada en el commit local
+verificado 35c7b49 (Etapa 4: completar feed de seguidos y navegación). Las ocho funcionalidades previstas
 están implementadas para el prototipo local, sin despliegue ni preparación para
 producción. El usuario confirmó el commit de etapa 3, verificado como d7311c1
 (Etapa 3: añadir likes comentarios y seguimiento).
@@ -27,6 +28,7 @@ se ve bien y realizó el commit local.
 4. Feed de seguidos, navegación y revisión final: implementada y verificada automáticamente; pendiente de aceptación manual final.
 
 ## Completado
+- Commit de etapa 4 confirmado por el usuario y verificado: 35c7b49; aceptación manual final aún pendiente de confirmación explícita
 - Etapa 4: feed General y Siguiendo; consulta JOIN por seguimientos, orden descendente y sin duplicados
 - Feed vacío con orientación; Siguiendo excluye fotos propias, cuentas no seguidas y contenido sin cuenta
 - Navegación integrada con perfiles y búsqueda; cambiar feed sale del perfil y cerrar sesión vuelve a General
@@ -100,7 +102,7 @@ se ve bien y realizó el commit local.
 
 ## Pendiente
 - Completar checklist final con varias cuentas
-- Corregir incidencias si aparecen y guardar commit final
+- Corregir incidencias si aparecen y guardar el registro de aceptación final
 - Registrar aceptación final del usuario; no declarar revisión manual completada antes de su confirmación
 
 ## Problemas conocidos
