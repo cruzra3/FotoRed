@@ -184,6 +184,45 @@ hashes de contraseñas. Los perfiles y publicaciones siguen siendo públicos en
 este prototipo local; fotos de perfil y edición del nombre de usuario quedan
 fuera de esta etapa.
 
+## Etapa 3: likes, comentarios y seguimiento
+
+En publicaciones con cuenta asociada, «Me gusta» añade tu like y «Quitar Me gusta»
+lo retira. Cada cuenta puede tener un solo like por publicación; el contador es
+público y las interacciones son las mismas al visitar al autor o volver al feed.
+
+Abre «Comentarios» para leerlos o escribir uno de 1 a 500 caracteres y pulsar
+«Comentar». Los comentarios muestran al autor y se ordenan del más antiguo al
+más nuevo. No se permite enviar texto vacío o solo espacios. Cada envío válido
+crea un comentario, incluso si su texto coincide con otro. El formulario se limpia
+al enviarlo. Editar o borrar comentarios no está incluido en esta etapa.
+
+Visita otro perfil y pulsa «Seguir» o «Dejar de seguir». Los perfiles muestran
+contadores de seguidores y seguidos. No aparece el botón para seguir tu propia
+cuenta. La relación es independiente en cada dirección: seguir a alguien no hace
+que esa persona te siga automáticamente.
+
+Estas operaciones requieren sesión y cuentas existentes. Los visitantes pueden
+leer contadores y comentarios. Las fotos fijas y las publicaciones antiguas sin
+cuenta asociada permanecen como ejemplos, sin interacciones. SQLite crea las tablas
+likes, comentarios y seguimientos automáticamente sin borrar datos anteriores.
+Sus claves compuestas evitan likes y seguimientos duplicados; las escrituras
+activan la comprobación de claves foráneas.
+
+Todo queda en la misma base local y permanece al recargar, cerrar sesión o reiniciar
+Streamlit. El feed general sigue mostrando todas las publicaciones; el filtro de
+usuarios seguidos se incorporará en la etapa 4. El prototipo sigue sin moderación
+ni herramientas de eliminación de cuentas.
+
+Revisión manual sugerida con dos cuentas A y B:
+
+- B da Me gusta a una foto de A, lo quita y lo vuelve a dar; el contador refleja 0/1.
+- A da su propio like: el total aumenta sin modificar el de B.
+- B comenta; A y un visitante pueden leer el texto y su autor al recargar.
+- Un comentario vacío o de espacios muestra error; el campo admite hasta 500 caracteres.
+- B sigue a A: los seguidores de A y seguidos de B aumentan; dejar de seguir los reduce.
+- No se puede seguir la propia cuenta ni interactuar sin sesión.
+- Feed y perfil muestran las mismas interacciones; las cuentas, perfiles y fotos anteriores se conservan.
+
 ## Guardar el progreso con Git y GitHub
 
 Git guarda versiones del proyecto mediante **commits** en tu computadora.

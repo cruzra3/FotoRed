@@ -2,6 +2,8 @@ import streamlit as st
 import sqlite3
 
 from database import inicializar_bd, guardar_publicacion, obtener_publicaciones, registrar_usuario, autenticar_usuario, obtener_perfil, actualizar_perfil, buscar_usuarios
+from database import establecer_like, agregar_comentario, obtener_interacciones
+from database import establecer_seguimiento, obtener_seguimiento
 
 
 st.set_page_config(page_title="FotoRed", page_icon="📷", layout="centered")
@@ -42,6 +44,42 @@ def mostrar_publicaciones(publicaciones):
             st.image(publicacion["imagen"], width="stretch")
             if publicacion["descripcion"]:
                 st.text(publicacion["descripcion"])
+            if publicacion.get("usuario_id") is None:
+                continue
+            cuenta = st.session_state.usuario_actual
+            publicacion_id = publicacion["id"]
+            try:
+                social = obtener_interacciones(publicacion_id, cuenta["id"] if cuenta else None)
+            except sqlite3.Error:
+                st.error("No se pudieron cargar las interacciones.")
+                continue
+            st.caption(f"{social['likes']} Me gusta · {len(social['comentarios'])} comentarios")
+            etiqueta = "Quitar Me gusta" if social["like_propio"] else "Me gusta"
+            if st.button(etiqueta, key=f"like_{publicacion_id}", disabled=cuenta is None):
+                try:
+                    establecer_like(cuenta["id"], publicacion_id, not social["like_propio"])
+                except (ValueError, sqlite3.Error):
+                    st.error("No se pudo actualizar el Me gusta. Comprueba tu sesión.")
+                else:
+                    st.rerun()
+            with st.expander("Comentarios"):
+                for comentario in social["comentarios"]:
+                    st.text(f"@{comentario['usuario']}: {comentario['texto']}")
+                if cuenta is None:
+                    st.caption("Inicia sesión para dar Me gusta o comentar.")
+                else:
+                    with st.form(f"comentario_{publicacion_id}_{cuenta['id']}", clear_on_submit=True):
+                        texto_comentario = st.text_area("Escribe un comentario", max_chars=500)
+                        comentar = st.form_submit_button("Comentar")
+                    if comentar:
+                        try:
+                            agregar_comentario(cuenta["id"], publicacion_id, texto_comentario)
+                        except ValueError as error:
+                            st.error(str(error))
+                        except sqlite3.Error:
+                            st.error("No se pudo guardar el comentario.")
+                        else:
+                            st.rerun()
 
 
 with st.sidebar:
@@ -147,6 +185,21 @@ if perfil_visitado is not None:
     st.text(perfil["nombre_visible"] or perfil["nombre"])
     st.text(perfil["biografia"] or "Sin biografía todavía.")
     cuenta = st.session_state.usuario_actual
+    try:
+        seguimiento = obtener_seguimiento(perfil["id"], cuenta["id"] if cuenta else None)
+    except sqlite3.Error:
+        st.error("No se pudieron cargar los seguidores.")
+    else:
+        st.caption(f"{seguimiento['seguidores']} seguidores · {seguimiento['seguidos']} seguidos")
+        if cuenta is None or cuenta["id"] != perfil["id"]:
+            etiqueta = "Dejar de seguir" if seguimiento["siguiendo"] else "Seguir"
+            if st.button(etiqueta, key=f"seguir_{perfil['id']}", disabled=cuenta is None):
+                try:
+                    establecer_seguimiento(cuenta["id"], perfil["id"], not seguimiento["siguiendo"])
+                except (ValueError, sqlite3.Error):
+                    st.error("No se pudo actualizar el seguimiento. Comprueba tu sesión.")
+                else:
+                    st.rerun()
     if cuenta is not None and cuenta["id"] == perfil["id"]:
         with st.expander("Editar mi perfil"):
             with st.form(f"editar_perfil_{cuenta['id']}"):

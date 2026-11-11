@@ -43,6 +43,23 @@ def inicializar_bd():
                 conexion.execute("ALTER TABLE usuarios ADD COLUMN nombre_visible TEXT NOT NULL DEFAULT ''")
             if "biografia" not in columnas_usuario:
                 conexion.execute("ALTER TABLE usuarios ADD COLUMN biografia TEXT NOT NULL DEFAULT ''")
+            conexion.execute("""CREATE TABLE IF NOT EXISTS likes (
+                usuario_id INTEGER NOT NULL REFERENCES usuarios(id),
+                publicacion_id INTEGER NOT NULL REFERENCES publicaciones(id),
+                PRIMARY KEY (usuario_id, publicacion_id)
+            )""")
+            conexion.execute("""CREATE TABLE IF NOT EXISTS comentarios (
+                id INTEGER PRIMARY KEY,
+                usuario_id INTEGER NOT NULL REFERENCES usuarios(id),
+                publicacion_id INTEGER NOT NULL REFERENCES publicaciones(id),
+                texto TEXT NOT NULL CHECK(length(trim(texto)) BETWEEN 1 AND 500)
+            )""")
+            conexion.execute("""CREATE TABLE IF NOT EXISTS seguimientos (
+                seguidor_id INTEGER NOT NULL REFERENCES usuarios(id),
+                seguido_id INTEGER NOT NULL REFERENCES usuarios(id),
+                PRIMARY KEY (seguidor_id, seguido_id),
+                CHECK (seguidor_id != seguido_id)
+            )""")
 
 
 def registrar_usuario(nombre, contrasena):
@@ -158,3 +175,93 @@ def buscar_usuarios(texto):
             (patron, patron),
         ).fetchall()
         return [dict(fila) for fila in filas]
+
+
+def validar_interaccion(conexion, usuario_id, publicacion_id):
+    if not conexion.execute("SELECT 1 FROM usuarios WHERE id = ?", (usuario_id,)).fetchone():
+        raise ValueError("Debes iniciar sesión con una cuenta existente.")
+    if not conexion.execute(
+        "SELECT 1 FROM publicaciones WHERE id = ? AND usuario_id IS NOT NULL", (publicacion_id,)
+    ).fetchone():
+        raise ValueError("Esta publicación no admite interacciones.")
+
+
+def establecer_like(usuario_id, publicacion_id, activo):
+    with closing(sqlite3.connect(RUTA_BD)) as conexion:
+        conexion.execute("PRAGMA foreign_keys = ON")
+        with conexion:
+            validar_interaccion(conexion, usuario_id, publicacion_id)
+            if activo:
+                conexion.execute(
+                    "INSERT OR IGNORE INTO likes VALUES (?, ?)", (usuario_id, publicacion_id)
+                )
+            else:
+                conexion.execute(
+                    "DELETE FROM likes WHERE usuario_id = ? AND publicacion_id = ?",
+                    (usuario_id, publicacion_id),
+                )
+
+
+def agregar_comentario(usuario_id, publicacion_id, texto):
+    texto = texto.strip()
+    if not 1 <= len(texto) <= 500:
+        raise ValueError("El comentario debe tener entre 1 y 500 caracteres.")
+    with closing(sqlite3.connect(RUTA_BD)) as conexion:
+        conexion.execute("PRAGMA foreign_keys = ON")
+        with conexion:
+            validar_interaccion(conexion, usuario_id, publicacion_id)
+            conexion.execute(
+                "INSERT INTO comentarios (usuario_id, publicacion_id, texto) VALUES (?, ?, ?)",
+                (usuario_id, publicacion_id, texto),
+            )
+
+
+def obtener_interacciones(publicacion_id, usuario_id=None):
+    with closing(sqlite3.connect(RUTA_BD)) as conexion:
+        conexion.row_factory = sqlite3.Row
+        total = conexion.execute(
+            "SELECT COUNT(*) FROM likes WHERE publicacion_id = ?", (publicacion_id,)
+        ).fetchone()[0]
+        propio = conexion.execute(
+            "SELECT 1 FROM likes WHERE publicacion_id = ? AND usuario_id = ?",
+            (publicacion_id, usuario_id),
+        ).fetchone() is not None
+        comentarios = conexion.execute(
+            """SELECT u.nombre AS usuario, c.texto FROM comentarios c
+               JOIN usuarios u ON u.id = c.usuario_id
+               WHERE c.publicacion_id = ? ORDER BY c.id""", (publicacion_id,)
+        ).fetchall()
+        return {"likes": total, "like_propio": propio,
+                "comentarios": [dict(fila) for fila in comentarios]}
+
+
+def establecer_seguimiento(seguidor_id, seguido_id, activo):
+    if seguidor_id == seguido_id:
+        raise ValueError("No puedes seguirte a ti mismo.")
+    with closing(sqlite3.connect(RUTA_BD)) as conexion:
+        conexion.execute("PRAGMA foreign_keys = ON")
+        with conexion:
+            for usuario_id in (seguidor_id, seguido_id):
+                if not conexion.execute("SELECT 1 FROM usuarios WHERE id = ?", (usuario_id,)).fetchone():
+                    raise ValueError("Debes usar cuentas existentes para seguir usuarios.")
+            if activo:
+                conexion.execute("INSERT OR IGNORE INTO seguimientos VALUES (?, ?)",
+                                 (seguidor_id, seguido_id))
+            else:
+                conexion.execute("DELETE FROM seguimientos WHERE seguidor_id = ? AND seguido_id = ?",
+                                 (seguidor_id, seguido_id))
+
+
+def obtener_seguimiento(perfil_id, usuario_actual_id=None):
+    with closing(sqlite3.connect(RUTA_BD)) as conexion:
+        seguidores = conexion.execute(
+            "SELECT COUNT(*) FROM seguimientos WHERE seguido_id = ?", (perfil_id,)
+        ).fetchone()[0]
+        seguidos = conexion.execute(
+            "SELECT COUNT(*) FROM seguimientos WHERE seguidor_id = ?", (perfil_id,)
+        ).fetchone()[0]
+        siguiendo = conexion.execute(
+            "SELECT 1 FROM seguimientos WHERE seguidor_id = ? AND seguido_id = ?",
+            (usuario_actual_id, perfil_id),
+        ).fetchone() is not None
+        return {"seguidores": seguidores, "seguidos": seguidos, "siguiendo": siguiendo}

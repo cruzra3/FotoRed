@@ -1,11 +1,10 @@
 # PROGRESS.md
 
 ## Estado actual
-Etapa 2 de 4 implementada: perfiles editables propios, búsqueda y perfiles con
-publicaciones filtradas por autor. Ocho pruebas automatizadas pasadas con bases
-temporales; pendiente de revisión manual de la etapa 2.
-La etapa 1 fue aceptada por el usuario y guardada en el commit local verificado
-905c322 (Completar etapa 1: sesiones, autoría y formularios de acceso).
+Etapa 3 de 4 implementada: likes, comentarios y seguimiento persistentes en SQLite.
+Trece pruebas automatizadas pasadas con bases temporales; pendiente de revisión
+manual de la etapa 3. El usuario confirmó el commit de la etapa 2, verificado como
+e2d4873 (Etapa 2: añadir perfiles editables y búsqueda de usuarios).
 
 Primera versión implementada: página principal, feed de tres publicaciones ficticias
 y perfil de ejemplo en la barra lateral. Revisión visual manual completada por
@@ -21,11 +20,17 @@ se ve bien y realizó el commit local.
 
 ## Plan de cierre en cuatro etapas
 1. Sesiones y autoría: implementada y aceptada por el usuario tras sus pruebas.
-2. Perfiles y búsqueda: aprobada e implementada; pendiente de revisión manual.
-3. Likes, comentarios y seguimiento: pendiente de aprobación e implementación.
+2. Perfiles y búsqueda: implementada; usuario confirmó commit y avanzar a etapa 3.
+3. Likes, comentarios y seguimiento: aprobada e implementada; pendiente de revisión manual.
 4. Feed de seguidos, navegación y revisión final: pendiente de aprobación e implementación.
 
 ## Completado
+- Etapa 3: tablas likes, comentarios y seguimientos creadas sin borrar datos; claves compuestas, claves foráneas activas en escrituras y prohibición de autoseguimiento
+- Dar/quitar likes por cuenta, contadores y lectura pública de comentarios en feed y perfiles
+- Comentarios de 1 a 500 caracteres, con autor real y orden cronológico; rechazo de vacíos y espacios
+- Seguir/dejar de seguir desde perfiles ajenos; contadores de seguidores/seguidos; acciones solo con sesión y cuentas existentes
+- Contenido antiguo sin cuenta asociada permanece sin interacciones
+- Trece pruebas unittest/AppTest pasadas: etapas anteriores más persistencia, likes únicos por cuenta, comentarios, seguidores, rechazo de invitado/datos inexistentes y flujo de UI; BD temporales
 - Etapa 2: migración repetible añade nombre_visible y biografia sin borrar cuentas, hashes ni publicaciones
 - Edición de nombre visible (60 caracteres) y biografía (150); usuario único sin cambios; actualización dirigida al id de sesión
 - Búsqueda pública por usuario y nombre visible, coincidencias parciales con casefold Unicode y comodines escapados
@@ -83,11 +88,11 @@ se ve bien y realizó el commit local.
 - Verificación con Streamlit AppTest: ejecución sin excepciones, título y aviso comprobados
 
 ## En progreso
-- Revisión manual de la etapa 2: perfiles y búsqueda
+- Revisión manual de la etapa 3: interacciones sociales
 
 ## Pendiente
-- Completar checklist manual y guardar commit de etapa 2
-- Etapas 3 y 4 del plan, cada una previa aprobación
+- Completar checklist manual y guardar commit de etapa 3
+- Etapa 4: feed de seguidos, navegación y revisión final, previa aprobación
 
 ## Problemas conocidos
 - El usuario reportó que pudo registrar una cuenta con la contraseña de 7 caracteres Abcd123.
@@ -106,5 +111,6 @@ confirmado por separado las pruebas de sustitución, eliminación y archivo inv�
 en el navegador; las pruebas automatizadas utilizaron archivos simulados.
 
 ## Próxima tarea
-Revisar manualmente perfiles y búsqueda con dos cuentas. Tras aceptar la etapa 2,
-pedir aprobación para la etapa 3: likes, comentarios y seguimiento.
+Revisar manualmente likes, comentarios y seguimiento con dos cuentas. Tras aceptar
+la etapa 3, pedir aprobación para la etapa 4: feed de usuarios seguidos, navegación
+y revisión final del proyecto local.
