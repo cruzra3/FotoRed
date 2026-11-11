@@ -1,6 +1,10 @@
 # PROGRESS.md
 
 ## Estado actual
+Registro local de usuarios implementado. Aún no hay inicio de sesión ni asociación
+de publicaciones con cuentas reales. El usuario confirmó que está satisfecho con
+las pruebas del registro.
+
 Primera versión implementada: página principal, feed de tres publicaciones ficticias
 y perfil de ejemplo en la barra lateral. Revisión visual manual completada por
 el usuario, quien confirmó que la pantalla se ve bien.
@@ -14,6 +18,13 @@ anterior de publicaciones temporales. Después confirmó que la versión con SQL
 se ve bien y realizó el commit local.
 
 ## Completado
+- Revisión manual del registro aceptada por el usuario; listo para guardar este paso mediante commit local
+- Longitud de contraseña de registro ajustada por solicitud del usuario: mínimo 8 y máximo 20 caracteres, en validación, formulario y README
+- Verificación en BD temporal y AppTest: 8 y 20 caracteres aceptados, 7 y 21 rechazados en la función de registro; campo limitado a 20 y mensajes del formulario comprobados
+- Registro de usuarios aprobado e implementado: tabla usuarios añadida sin borrar publicaciones y formulario en la barra lateral
+- Nombres únicos normalizados a minúsculas; validación de nombre y longitud de contraseña; mensajes de duplicado y error de base de datos
+- Contraseñas protegidas con PBKDF2-HMAC-SHA256 (600 000 iteraciones) y sal aleatoria de 16 bytes; algoritmo, iteraciones, sal y hash almacenados, sin texto plano
+- Verificación con BD temporal y AppTest: registro, duplicados con mayúsculas/espacios, entradas inválidas, sales distintas, hash reproducible y conservación de publicaciones; sin excepciones
 - Revisión de SQLite confirmada por el usuario; commit local verificado: 5cf8669 (Guardar publicaciones localmente con SQLite)
 - Persistencia local con SQLite aprobada e implementada en database.py; tabla creada automáticamente y fotos almacenadas como BLOB
 - Feed lee las publicaciones guardadas por id descendente antes de las fotografías de ejemplo
@@ -47,14 +58,18 @@ se ve bien y realizó el commit local.
 - Verificación con Streamlit AppTest: ejecución sin excepciones, título y aviso comprobados
 
 ## En progreso
-- Esperando aprobación para iniciar el registro de usuarios
+- Esperando aprobación para el siguiente paso de inicio de sesión
 
 ## Pendiente
-- Aprobar un primer paso de autenticación: registro de usuarios con nombre único y contraseña protegida
-- Implementar autenticación
+- Implementar inicio de sesión y asociación de publicaciones con cuentas, en pasos posteriores aprobados
 
 ## Problemas conocidos
-Ninguno reportado tras la verificación con AppTest y la revisión visual del usuario.
+- El usuario reportó que pudo registrar una cuenta con la contraseña de 7 caracteres Abcd123.
+  No reproducido con el código actual: AppTest envió esa contraseña con un nombre
+  nuevo, mostró el error de longitud y se comprobó que no insertó usuarios en una
+  base temporal. Posteriormente el usuario confirmó estar satisfecho con las pruebas.
+  No se determinó la causa del reporte inicial ni se confirmó una corrección de código.
+  No se modificó la validación ni se borraron cuentas reales.
 Las fotografías externas de Picsum requieren Internet. El prototipo no está listo
 para producción.
 La base local no se sube con Git y necesita respaldo separado. No hay autenticación:
@@ -65,7 +80,5 @@ confirmado por separado las pruebas de sustitución, eliminación y archivo inv�
 en el navegador; las pruebas automatizadas utilizaron archivos simulados.
 
 ## Próxima tarea
-Propuesta pendiente de aprobación: crear un formulario de registro y una tabla de
-usuarios en SQLite, con nombres únicos y contraseñas almacenadas mediante hash
-con sal, nunca en texto plano. El inicio de sesión y la asociación de publicaciones
-a cuentas reales se abordarán después. Pedir aprobación antes de implementar.
+Proponer el inicio de sesión como siguiente incremento y pedir aprobación antes
+de implementarlo.

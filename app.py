@@ -1,7 +1,7 @@
 import streamlit as st
 import sqlite3
 
-from database import inicializar_bd, guardar_publicacion, obtener_publicaciones
+from database import inicializar_bd, guardar_publicacion, obtener_publicaciones, registrar_usuario
 
 
 st.set_page_config(page_title="FotoRed", page_icon="📷", layout="centered")
@@ -25,11 +25,33 @@ with st.sidebar:
     st.write(perfil["biografia"])
     st.caption("Datos ficticios para este prototipo. No hay una sesión iniciada.")
 
+    st.header("Registro de usuarios")
+    st.caption("Crear una cuenta todavía no inicia sesión ni cambia el autor de las publicaciones.")
+    with st.form("registro", clear_on_submit=True):
+        nombre_registro = st.text_input("Nombre de usuario", max_chars=30)
+        contrasena_registro = st.text_input(
+            "Contraseña", type="password", max_chars=20,
+            help="Entre 8 y 20 caracteres.",
+        )
+        registrar = st.form_submit_button("Crear cuenta")
+    if registrar:
+        try:
+            creado = registrar_usuario(nombre_registro, contrasena_registro)
+        except ValueError as error:
+            st.error(str(error))
+        except sqlite3.Error:
+            st.error("No se pudo guardar la cuenta. Inténtalo de nuevo.")
+        else:
+            if creado:
+                st.success("Cuenta creada. El inicio de sesión estará disponible en un próximo paso.")
+            else:
+                st.warning("Ese nombre de usuario ya está registrado.")
+
 st.title("📷 FotoRed")
 st.subheader("Un espacio para compartir tus fotografías")
 st.write("¡Bienvenido a FotoRed! Estamos construyendo esta aplicación paso a paso.")
 
-st.info("Prototipo de aprendizaje: las publicaciones se guardan localmente con SQLite. No hay cuentas reales.")
+st.info("Prototipo de aprendizaje: publicaciones y registros guardados localmente. El inicio de sesión aún no está disponible.")
 
 st.header("Previsualizar una fotografía")
 st.caption("Selecciona un JPG o PNG y pulsa Publicar para guardarlo y añadirlo al feed.")

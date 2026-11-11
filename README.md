@@ -78,6 +78,32 @@ ni la base de datos. Para respaldar los datos, detén la aplicación y copia
 Sigue siendo un prototipo local sin autenticación. Las sesiones que usan la misma
 base de datos ven las mismas publicaciones; todavía no hay privacidad por usuario.
 
+## Registro de usuarios (prototipo)
+
+En la barra lateral encontrarás «Registro de usuarios». Introduce un nombre de
+3 a 30 letras ASCII, números o guiones bajos, y una contraseña de 8 a 20
+caracteres. Los nombres se guardan en minúsculas y sin espacios en los extremos:
+`Ana` y ` ana ` representan el mismo usuario. La contraseña se conserva exactamente
+al calcular el hash; no se recorta ni transforma.
+
+Pulsa «Crear cuenta». Un nombre repetido muestra un aviso. El formulario limpia
+sus campos después del envío; ante un error tendrás que introducirlos otra vez.
+La tabla usuarios se crea sin borrar las publicaciones existentes.
+
+Se almacena un hash PBKDF2-HMAC-SHA256 con 600 000 iteraciones y una sal aleatoria
+independiente de 16 bytes para cada cuenta. Se guardan algoritmo, iteraciones,
+sal y hash, nunca la contraseña en texto plano. Solo se usa la biblioteca estándar.
+Referencia: [hashlib de Python](https://docs.python.org/3/library/hashlib.html).
+
+Para comprobarlo, registra un nombre nuevo y vuelve a intentarlo con el mismo
+nombre en mayúsculas: debe indicar que ya existe. Prueba también campos vacíos
+y una contraseña corta. Una vez creada la cuenta, recarga e intenta registrarla
+otra vez para comprobar su persistencia.
+
+Este es un registro local de aprendizaje. Todavía no existe inicio de sesión,
+recuperación de cuentas ni vínculo entre las cuentas y las publicaciones. El perfil
+ficticio sigue siendo el autor al publicar. No está listo para producción.
+
 ## Guardar el progreso con Git y GitHub
 
 Git guarda versiones del proyecto mediante **commits** en tu computadora.
