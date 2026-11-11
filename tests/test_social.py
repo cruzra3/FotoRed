@@ -45,6 +45,62 @@ class SocialTest(unittest.TestCase):
         self.assertFalse(database.obtener_interacciones(self.post, self.luis)["like_propio"])
         self.assertEqual(database.obtener_interacciones(self.post)["likes"], 1)
 
+    def test_feed_seguidos_filtra_ordena_y_no_duplica(self):
+        self.assertEqual(database.obtener_feed_seguidos(self.luis), [])
+        database.registrar_usuario("tercera", "Abcd9999")
+        tercera = database.autenticar_usuario("tercera", "Abcd9999")["id"]
+        imagen = database.obtener_publicaciones()[0]["imagen"]
+        database.guardar_publicacion(self.luis, imagen, "Propia")
+        database.guardar_publicacion(tercera, imagen, "No seguida")
+        database.guardar_publicacion(self.ana, imagen, "Más reciente de Ana")
+        for _ in range(2):
+            database.establecer_seguimiento(self.luis, self.ana, True)
+        filas = database.obtener_feed_seguidos(self.luis)
+        self.assertEqual([f["descripcion"] for f in filas], ["Más reciente de Ana", "Foto de Ana"])
+        self.assertEqual(database.obtener_feed_seguidos(None), [])
+        database.inicializar_bd()
+        self.assertEqual(len(database.obtener_feed_seguidos(self.luis)), 2)
+        database.establecer_seguimiento(self.luis, self.ana, False)
+        self.assertEqual(database.obtener_feed_seguidos(self.luis), [])
+        self.assertEqual(len(database.obtener_publicaciones()), 4)
+
+    def test_navegacion_feed_y_persistencia_entre_sesiones(self):
+        app = AppTest.from_file(APP).run()
+        self.assertEqual(list(app.radio[0].options), ["General"])
+        app.text_input(key="login_usuario").input("luis")
+        app.text_input(key="login_clave").input("Abcd5678")
+        next(b for b in app.button if b.label == "Entrar").click().run()
+        app.radio[0].set_value("Siguiendo").run()
+        self.assertFalse(app.get("image"))
+        self.assertTrue(any("Todavía no hay publicaciones de usuarios seguidos" in i.value for i in app.info))
+        app.text_input(key="buscar_usuario").input("ana").run()
+        app.button(key=f"resultado_{self.ana}").click().run()
+        app.button(key=f"seguir_{self.ana}").click().run()
+        app.button(key="volver_feed").click().run()
+        self.assertEqual(len(app.get("image")), 1)
+        app.button(key=f"like_{self.post}").click().run()
+        next(t for t in app.text_area if t.label == "Escribe un comentario").input("Desde Siguiendo")
+        next(b for b in app.button if b.label == "Comentar").click().run()
+        self.assertFalse(app.exception)
+        app.button(key=f"autor_{self.post}").click().run()
+        app.radio[0].set_value("General").run()
+        self.assertIsNone(app.session_state.perfil_visitado)
+        self.assertEqual(len(app.get("image")), 4)
+        app.button(key="salir").click().run()
+        self.assertEqual(list(app.radio[0].options), ["General"])
+        nuevo = AppTest.from_file(APP).run()
+        nuevo.text_input(key="login_usuario").input("luis")
+        nuevo.text_input(key="login_clave").input("Abcd5678")
+        next(b for b in nuevo.button if b.label == "Entrar").click().run()
+        nuevo.radio[0].set_value("Siguiendo").run()
+        self.assertEqual(nuevo.button(key=f"like_{self.post}").label, "Quitar Me gusta")
+        self.assertIn("@luis: Desde Siguiendo", [t.value for t in nuevo.text])
+        nuevo.button(key=f"autor_{self.post}").click().run()
+        nuevo.button(key=f"seguir_{self.ana}").click().run()
+        nuevo.button(key="volver_feed").click().run()
+        self.assertFalse(nuevo.exception)
+        self.assertFalse(nuevo.get("image"))
+
     def test_comentarios_validacion_y_autor(self):
         for texto in ("", " \n ", "x" * 501):
             with self.assertRaises(ValueError):

@@ -265,3 +265,17 @@ def obtener_seguimiento(perfil_id, usuario_actual_id=None):
             (usuario_actual_id, perfil_id),
         ).fetchone() is not None
         return {"seguidores": seguidores, "seguidos": seguidos, "siguiendo": siguiendo}
+
+
+def obtener_feed_seguidos(usuario_id):
+    with closing(sqlite3.connect(RUTA_BD)) as conexion:
+        conexion.row_factory = sqlite3.Row
+        filas = conexion.execute(
+            """SELECT p.id, p.usuario, p.imagen, p.descripcion, p.usuario_id
+               FROM publicaciones p
+               JOIN seguimientos s ON s.seguido_id = p.usuario_id
+               WHERE s.seguidor_id = ?
+               ORDER BY p.id DESC""",
+            (usuario_id,),
+        ).fetchall()
+        return [dict(fila) for fila in filas]

@@ -4,6 +4,7 @@ import sqlite3
 from database import inicializar_bd, guardar_publicacion, obtener_publicaciones, registrar_usuario, autenticar_usuario, obtener_perfil, actualizar_perfil, buscar_usuarios
 from database import establecer_like, agregar_comentario, obtener_interacciones
 from database import establecer_seguimiento, obtener_seguimiento
+from database import obtener_feed_seguidos
 
 
 st.set_page_config(page_title="FotoRed", page_icon="📷", layout="centered")
@@ -147,6 +148,9 @@ with st.sidebar:
             st.button("Iniciar sesión", on_click=cambiar_formulario, args=("login",))
 
     st.divider()
+    st.header("Navegación")
+    opciones_feed = ["General", "Siguiendo"] if st.session_state.usuario_actual else ["General"]
+    st.radio("Feed", opciones_feed, key="tipo_feed", on_change=abrir_perfil, args=(None,))
     st.header("Buscar usuarios")
     busqueda = st.text_input("Usuario o nombre", key="buscar_usuario")
     if busqueda.strip():
@@ -166,7 +170,6 @@ with st.sidebar:
 
 st.title("📷 FotoRed")
 st.subheader("Un espacio para compartir tus fotografías")
-st.write("¡Bienvenido a FotoRed! Estamos construyendo esta aplicación paso a paso.")
 
 st.info("Prototipo local: inicia sesión para publicar con tu cuenta. El feed es visible para todos.")
 
@@ -272,7 +275,11 @@ if st.button("Publicar", disabled=st.session_state.usuario_actual is None):
         st.warning("Selecciona una fotografía válida antes de publicar.")
 
 st.header("Feed de publicaciones")
-st.caption("Usuarios ficticios y fotos de muestra de Picsum. Las imágenes requieren Internet.")
+solo_seguidos = st.session_state.get("tipo_feed") == "Siguiendo" and cuenta_actual is not None
+if solo_seguidos:
+    st.caption("Publicaciones de las cuentas que sigues, de más reciente a más antigua.")
+else:
+    st.caption("Todas las publicaciones guardadas, de más reciente a más antigua.")
 
 publicaciones = [
     {
@@ -293,9 +300,21 @@ publicaciones = [
 ]
 
 try:
-    publicaciones_guardadas = obtener_publicaciones()
+    publicaciones_guardadas = (
+        obtener_feed_seguidos(cuenta_actual["id"]) if solo_seguidos else obtener_publicaciones()
+    )
 except sqlite3.Error:
     st.error("No se pudieron leer las publicaciones guardadas.")
     st.stop()
 
-mostrar_publicaciones(publicaciones_guardadas + publicaciones)
+if not publicaciones_guardadas:
+    if solo_seguidos:
+        st.info("Todavía no hay publicaciones de usuarios seguidos. Busca una cuenta y pulsa Seguir en su perfil.")
+    else:
+        st.info("Todavía no hay publicaciones guardadas. Inicia sesión y comparte tu primera fotografía.")
+
+mostrar_publicaciones(publicaciones_guardadas)
+if not solo_seguidos:
+    with st.expander("Contenido de ejemplo"):
+        st.caption("Fotos de muestra de Picsum; requieren Internet y no están asociadas a cuentas.")
+        mostrar_publicaciones(publicaciones)

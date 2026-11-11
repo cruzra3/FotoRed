@@ -1,10 +1,12 @@
 # PROGRESS.md
 
 ## Estado actual
-Etapa 3 de 4 implementada: likes, comentarios y seguimiento persistentes en SQLite.
-Trece pruebas automatizadas pasadas con bases temporales; pendiente de revisión
-manual de la etapa 3. El usuario confirmó el commit de la etapa 2, verificado como
-e2d4873 (Etapa 2: añadir perfiles editables y búsqueda de usuarios).
+Etapa 4 de 4 implementada: feed de seguidos, navegación integrada y revisión
+final automatizada. Quince pruebas pasadas con bases temporales; pendiente de
+checklist manual final y commit de cierre. Las ocho funcionalidades previstas
+están implementadas para el prototipo local, sin despliegue ni preparación para
+producción. El usuario confirmó el commit de etapa 3, verificado como d7311c1
+(Etapa 3: añadir likes comentarios y seguimiento).
 
 Primera versión implementada: página principal, feed de tres publicaciones ficticias
 y perfil de ejemplo en la barra lateral. Revisión visual manual completada por
@@ -21,10 +23,16 @@ se ve bien y realizó el commit local.
 ## Plan de cierre en cuatro etapas
 1. Sesiones y autoría: implementada y aceptada por el usuario tras sus pruebas.
 2. Perfiles y búsqueda: implementada; usuario confirmó commit y avanzar a etapa 3.
-3. Likes, comentarios y seguimiento: aprobada e implementada; pendiente de revisión manual.
-4. Feed de seguidos, navegación y revisión final: pendiente de aprobación e implementación.
+3. Likes, comentarios y seguimiento: implementada; usuario confirmó commit y avanzar a etapa 4.
+4. Feed de seguidos, navegación y revisión final: implementada y verificada automáticamente; pendiente de aceptación manual final.
 
 ## Completado
+- Etapa 4: feed General y Siguiendo; consulta JOIN por seguimientos, orden descendente y sin duplicados
+- Feed vacío con orientación; Siguiendo excluye fotos propias, cuentas no seguidas y contenido sin cuenta
+- Navegación integrada con perfiles y búsqueda; cambiar feed sale del perfil y cerrar sesión vuelve a General
+- Fotos fijas agrupadas en sección de ejemplo plegada; datos antiguos conservados y sin atribución automática
+- Quince pruebas unittest/AppTest pasadas: etapas anteriores, filtrado con tres cuentas, seguir/dejar de seguir, navegación y persistencia de interacciones entre sesiones; bases temporales
+- README actualizado con funcionamiento, checklist final y límites del prototipo local
 - Etapa 3: tablas likes, comentarios y seguimientos creadas sin borrar datos; claves compuestas, claves foráneas activas en escrituras y prohibición de autoseguimiento
 - Dar/quitar likes por cuenta, contadores y lectura pública de comentarios en feed y perfiles
 - Comentarios de 1 a 500 caracteres, con autor real y orden cronológico; rechazo de vacíos y espacios
@@ -88,11 +96,12 @@ se ve bien y realizó el commit local.
 - Verificación con Streamlit AppTest: ejecución sin excepciones, título y aviso comprobados
 
 ## En progreso
-- Revisión manual de la etapa 3: interacciones sociales
+- Revisión manual final de etapa 4 y aceptación de la versión local
 
 ## Pendiente
-- Completar checklist manual y guardar commit de etapa 3
-- Etapa 4: feed de seguidos, navegación y revisión final, previa aprobación
+- Completar checklist final con varias cuentas
+- Corregir incidencias si aparecen y guardar commit final
+- Registrar aceptación final del usuario; no declarar revisión manual completada antes de su confirmación
 
 ## Problemas conocidos
 - El usuario reportó que pudo registrar una cuenta con la contraseña de 7 caracteres Abcd123.
@@ -111,6 +120,6 @@ confirmado por separado las pruebas de sustitución, eliminación y archivo inv�
 en el navegador; las pruebas automatizadas utilizaron archivos simulados.
 
 ## Próxima tarea
-Revisar manualmente likes, comentarios y seguimiento con dos cuentas. Tras aceptar
-la etapa 3, pedir aprobación para la etapa 4: feed de usuarios seguidos, navegación
-y revisión final del proyecto local.
+Completar el checklist final de README.md con tres cuentas y confirmar resultados.
+Si se acepta, registrar el cierre de las cuatro etapas y guardar el commit final.
+No hay nuevas funcionalidades pendientes del alcance local acordado.

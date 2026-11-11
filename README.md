@@ -209,8 +209,8 @@ Sus claves compuestas evitan likes y seguimientos duplicados; las escrituras
 activan la comprobación de claves foráneas.
 
 Todo queda en la misma base local y permanece al recargar, cerrar sesión o reiniciar
-Streamlit. El feed general sigue mostrando todas las publicaciones; el filtro de
-usuarios seguidos se incorporará en la etapa 4. El prototipo sigue sin moderación
+Streamlit. El feed general muestra todas las publicaciones y el filtro «Siguiendo» muestra
+solo las de cuentas seguidas. El prototipo sigue sin moderación
 ni herramientas de eliminación de cuentas.
 
 Revisión manual sugerida con dos cuentas A y B:
@@ -222,6 +222,58 @@ Revisión manual sugerida con dos cuentas A y B:
 - B sigue a A: los seguidores de A y seguidos de B aumentan; dejar de seguir los reduce.
 - No se puede seguir la propia cuenta ni interactuar sin sesión.
 - Feed y perfil muestran las mismas interacciones; las cuentas, perfiles y fotos anteriores se conservan.
+
+## Etapa 4: feed y cierre de la versión local
+
+En «Navegación → Feed» puedes elegir:
+
+- **General:** todas las publicaciones guardadas; disponible sin sesión.
+- **Siguiendo:** únicamente publicaciones de las cuentas que sigues; requiere sesión.
+
+Ambos se ordenan por id descendente (orden de publicación, no de popularidad).
+Siguiendo no incluye tus propias fotos, cuentas no seguidas ni ejemplos antiguos.
+Si no hay publicaciones, se muestra un aviso que orienta a buscar y seguir cuentas.
+Tu foto recién publicada siempre está en General y Mi perfil, aunque estés mirando
+Siguiendo. Seguir o dejar de seguir actualiza el filtro al volver al feed.
+
+Elegir otro feed vuelve directamente a ese feed desde cualquier perfil. «Volver
+al feed» conserva la selección actual. «Mi perfil», «Ver perfil» y los resultados
+de búsqueda permiten visitar cuentas. Cerrar sesión vuelve a General.
+
+Las fotos fijas de Picsum aparecen agrupadas en «Contenido de ejemplo», cerrado
+por defecto, al final de General. Las publicaciones antiguas guardadas sin cuenta
+siguen visibles y etiquetadas; no se atribuyen a cuentas reales ni aparecen en
+Siguiendo. Su conservación evita borrar datos de las primeras etapas.
+
+El código cubre las ocho funcionalidades de PROJECT.md para uso local: registro
+e inicio de sesión, perfiles, publicación, feed, likes, comentarios, seguimiento
+y búsqueda. Las cuatro etapas están implementadas; el cierre requiere la revisión
+manual final del usuario. No implica preparación para producción ni despliegue.
+
+Checklist final con tres cuentas A, B y C:
+
+- Publica fotos con B y C y comprueba que General muestra ambas.
+- Entra con A; sin seguimientos, Siguiendo debe mostrar un aviso vacío.
+- Busca a B, síguelo y vuelve al feed: Siguiendo muestra solo fotos de B.
+- Sigue a C: aparecen B y C en orden de publicación, sin duplicados.
+- Da un like y comenta desde Siguiendo; comprueba lo mismo en el perfil del autor.
+- Deja de seguir a B: sus fotos desaparecen de Siguiendo y permanecen en General.
+- Comprueba Mi perfil, edición propia, búsqueda y regreso a ambos feeds.
+- Cierra sesión: queda General, sin permisos para publicar o interactuar.
+- Recarga/reinicia y entra de nuevo: fotos, perfiles e interacciones permanecen.
+- Comprueba el aviso de errores de acceso y la creación de cuentas nuevas.
+
+Para repetir las pruebas automatizadas desde Projects:
+
+```bash
+env/bin/python -m unittest discover -s FotoRed/tests -v
+```
+
+Limitaciones del prototipo: el feed carga las imágenes completas sin paginación;
+los datos son locales y el respaldo de SQLite es manual. No incluye borrado/edición
+de publicaciones, moderación, recuperación de contraseña ni preparación para uso
+público. No elimines usuarios directamente con SQL: los datos relacionados requieren
+una política de eliminación que no forma parte de este proyecto.
 
 ## Guardar el progreso con Git y GitHub
 
