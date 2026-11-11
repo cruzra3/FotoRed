@@ -247,8 +247,8 @@ Siguiendo. Su conservación evita borrar datos de las primeras etapas.
 
 El código cubre las ocho funcionalidades de PROJECT.md para uso local: registro
 e inicio de sesión, perfiles, publicación, feed, likes, comentarios, seguimiento
-y búsqueda. Las cuatro etapas están implementadas; el cierre requiere la revisión
-manual final del usuario. No implica preparación para producción ni despliegue.
+y búsqueda. Las cuatro etapas están implementadas y el usuario confirmó que el checklist
+manual final funcionó sin problemas. La versión local queda aceptada. No implica preparación para producción ni despliegue.
 
 Checklist final con tres cuentas A, B y C:
 

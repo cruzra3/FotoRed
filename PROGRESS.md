@@ -1,13 +1,12 @@
 # PROGRESS.md
 
 ## Estado actual
-Etapa 4 de 4 implementada: feed de seguidos, navegación integrada y revisión
-final automatizada. Quince pruebas pasadas con bases temporales; pendiente de
-confirmación del checklist manual final. Etapa 4 guardada en el commit local
-verificado 35c7b49 (Etapa 4: completar feed de seguidos y navegación). Las ocho funcionalidades previstas
-están implementadas para el prototipo local, sin despliegue ni preparación para
-producción. El usuario confirmó el commit de etapa 3, verificado como d7311c1
-(Etapa 3: añadir likes comentarios y seguimiento).
+Versión local de FotoRed completada y aceptada por el usuario: confirmó que todo
+el checklist final funcionó sin problemas. Las cuatro etapas y las ocho
+funcionalidades acordadas están implementadas. Se conservan los resultados de las
+15 pruebas automatizadas previas con bases temporales y la aceptación manual final.
+Etapa 4 guardada en el commit local verificado 35c7b49. Este cierre es del prototipo
+local de aprendizaje, sin despliegue ni preparación para producción.
 
 Primera versión implementada: página principal, feed de tres publicaciones ficticias
 y perfil de ejemplo en la barra lateral. Revisión visual manual completada por
@@ -25,10 +24,11 @@ se ve bien y realizó el commit local.
 1. Sesiones y autoría: implementada y aceptada por el usuario tras sus pruebas.
 2. Perfiles y búsqueda: implementada; usuario confirmó commit y avanzar a etapa 3.
 3. Likes, comentarios y seguimiento: implementada; usuario confirmó commit y avanzar a etapa 4.
-4. Feed de seguidos, navegación y revisión final: implementada y verificada automáticamente; pendiente de aceptación manual final.
+4. Feed de seguidos, navegación y revisión final: implementada, verificada automáticamente y aceptada por el usuario.
 
 ## Completado
-- Commit de etapa 4 confirmado por el usuario y verificado: 35c7b49; aceptación manual final aún pendiente de confirmación explícita
+- Aceptación final: el usuario confirmó que todo funcionó sin problemas; cierre de las cuatro etapas
+- Commit de etapa 4 confirmado por el usuario y verificado: 35c7b49
 - Etapa 4: feed General y Siguiendo; consulta JOIN por seguimientos, orden descendente y sin duplicados
 - Feed vacío con orientación; Siguiendo excluye fotos propias, cuentas no seguidas y contenido sin cuenta
 - Navegación integrada con perfiles y búsqueda; cambiar feed sale del perfil y cerrar sesión vuelve a General
@@ -98,12 +98,11 @@ se ve bien y realizó el commit local.
 - Verificación con Streamlit AppTest: ejecución sin excepciones, título y aviso comprobados
 
 ## En progreso
-- Revisión manual final de etapa 4 y aceptación de la versión local
+- Ninguna tarea de implementación en progreso; versión local aceptada
 
 ## Pendiente
-- Completar checklist final con varias cuentas
-- Corregir incidencias si aparecen y guardar el registro de aceptación final
-- Registrar aceptación final del usuario; no declarar revisión manual completada antes de su confirmación
+- Guardar esta documentación de cierre mediante commit local
+- Ninguna funcionalidad pendiente del alcance local acordado
 
 ## Problemas conocidos
 - El usuario reportó que pudo registrar una cuenta con la contraseña de 7 caracteres Abcd123.
@@ -122,6 +121,5 @@ confirmado por separado las pruebas de sustitución, eliminación y archivo inv�
 en el navegador; las pruebas automatizadas utilizaron archivos simulados.
 
 ## Próxima tarea
-Completar el checklist final de README.md con tres cuentas y confirmar resultados.
-Si se acepta, registrar el cierre de las cuatro etapas y guardar el commit final.
-No hay nuevas funcionalidades pendientes del alcance local acordado.
+Guardar el registro de cierre mediante commit local. Cualquier ampliación o
+publicación en Internet requiere un nuevo alcance aprobado por el usuario.
