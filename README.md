@@ -345,7 +345,7 @@ no elimina tu carpeta local ni publica la aplicación como servicio web.
 7. **Sube la rama y todos sus commits.**
 
    ```bash
-   git push -u origin main
+   git push -u origin main # <----- aqui
    ```
 
    Completa la autenticación que solicite Git. Si aparece un rechazo, conserva el
