@@ -27,6 +27,9 @@ se ve bien y realizó el commit local.
 4. Feed de seguidos, navegación y revisión final: implementada, verificada automáticamente y aceptada por el usuario.
 
 ## Completado
+- README ampliado con dos guías numeradas: subir el historial a GitHub y clonar/preparar FotoRed en otra computadora (macOS/Linux y Windows)
+- Guías incluyen entorno virtual, dependencias, pruebas, autenticación Git y traslado privado opcional de SQLite; distinguen código e historial de datos locales
+- Comprobado antes de documentar: rama main, sin remotos configurados; no se ejecutaron commits, push, clone ni instalaciones en otra computadora
 - Aceptación final: el usuario confirmó que todo funcionó sin problemas; cierre de las cuatro etapas
 - Commit de etapa 4 confirmado por el usuario y verificado: 35c7b49
 - Etapa 4: feed General y Siguiendo; consulta JOIN por seguimientos, orden descendente y sin duplicados
@@ -121,5 +124,8 @@ confirmado por separado las pruebas de sustitución, eliminación y archivo inv�
 en el navegador; las pruebas automatizadas utilizaron archivos simulados.
 
 ## Próxima tarea
+Guardar README.md y PROGRESS.md en un commit y seguir la nueva guía si se desea subir
+el código a GitHub; subida todavía no ejecutada.
+
 Guardar el registro de cierre mediante commit local. Cualquier ampliación o
 publicación en Internet requiere un nuevo alcance aprobado por el usuario.

@@ -275,6 +275,217 @@ de publicaciones, moderación, recuperación de contraseña ni preparación para
 público. No elimines usuarios directamente con SQL: los datos relacionados requieren
 una política de eliminación que no forma parte de este proyecto.
 
+## Subir FotoRed a GitHub: pasos numerados
+
+Este proyecto ya tiene historial Git y su rama actual es `main`. No ejecutes de
+nuevo `git init`. Subirlo a GitHub conserva una copia del código y su historial;
+no elimina tu carpeta local ni publica la aplicación como servicio web.
+
+1. **Prepara tu cuenta y acceso.** Inicia sesión en GitHub y comprueba Git en tu
+   computadora:
+
+   ```bash
+   git --version
+   ```
+
+   Para HTTPS, utiliza el gestor de credenciales o un token de acceso cuando se
+   solicite; la contraseña de tu cuenta GitHub no sirve para autenticar Git.
+   No escribas tokens dentro de la URL del repositorio ni en archivos del proyecto.
+
+2. **Entra en el repositorio local.** Desde `Projects`:
+
+   ```bash
+   cd FotoRed
+   git status
+   git branch --show-current
+   ```
+
+   La rama debe ser `main`. Los siguientes comandos se ejecutan dentro de FotoRed.
+
+3. **Revisa las exclusiones.** Confirma que `data/`, los entornos virtuales, `.env`
+   y `.streamlit/secrets.toml` no se incluirán:
+
+   ```bash
+   git check-ignore data/fotored.sqlite3 .env .streamlit/secrets.toml
+   git ls-files -ci --exclude-standard
+   ```
+
+   El primer comando debe listar las rutas ignoradas; el segundo no debe mostrar
+   archivos. Revisa también `git status`: `.gitignore` no retira archivos que ya
+   estaban guardados en Git. Los datos locales se respaldan por separado.
+
+4. **Guarda los cambios de esta guía.** Revisa y crea el commit antes de subir:
+
+   ```bash
+   git diff
+   git add README.md PROGRESS.md
+   git diff --cached
+   git commit -m "Documentar subida a GitHub y preparación en otra computadora"
+   git status
+   ```
+
+   Si ya creaste este commit, no hace falta repetirlo. Cualquier otro cambio
+   pendiente debe revisarse y guardarse de forma explícita antes de continuar.
+
+5. **Crea un repositorio vacío en GitHub.** Llámalo `FotoRed` y elige si será público
+   o privado. No añadas README, licencia ni `.gitignore`, porque ya tienes archivos
+   e historial locales. Copia su URL HTTPS.
+
+6. **Conecta el remoto.** Sustituye `TU_USUARIO` por tu cuenta real:
+
+   ```bash
+   git remote -v
+   git remote add origin https://github.com/TU_USUARIO/FotoRed.git
+   git remote -v
+   ```
+
+   Ejecuta `remote add` solo si `origin` no existe. Si ya existe y su URL es correcta,
+   consérvalo; si apunta a otro destino, verifica el destino antes de cambiarlo.
+
+7. **Sube la rama y todos sus commits.**
+
+   ```bash
+   git push -u origin main
+   ```
+
+   Completa la autenticación que solicite Git. Si aparece un rechazo, conserva el
+   historial y revisa el mensaje; no uses `--force` para resolverlo automáticamente.
+
+8. **Comprueba el resultado.** Abre el repositorio en GitHub y verifica que aparecen
+   `app.py`, `database.py`, `requirements.txt`, `tests/` y los documentos. La carpeta
+   `data/` no debe aparecer. En la terminal:
+
+   ```bash
+   git status
+   git log -1 --oneline
+   ```
+
+   Tras futuros commits bastará con `git push` para subirlos al mismo destino.
+
+Referencia oficial: [Subir código local a GitHub](https://docs.github.com/en/migrations/importing-source-code/using-the-command-line-to-import-source-code/adding-locally-hosted-code-to-github).
+
+## Bajar FotoRed a otra computadora: pasos numerados
+
+Clonar descarga el código y su historial. **No descarga la base SQLite, los usuarios,
+las fotos publicadas ni las interacciones**, porque `data/` está excluida. El paso 6
+explica cómo conservar también esos datos, si lo deseas.
+
+1. **Instala los requisitos.** Necesitas Git y Python. Para reproducir el entorno
+   usado en el desarrollo, utiliza Python 3.14. Comprueba las instalaciones:
+
+   macOS/Linux:
+
+   ```bash
+   git --version
+   python3 --version
+   ```
+
+   Windows:
+
+   ```powershell
+   git --version
+   py -3.14 --version
+   ```
+
+   Si el repositorio es privado, autentícate con una cuenta que tenga acceso.
+
+2. **Clona en una carpeta de tu elección.** Sustituye la URL por la de tu repositorio.
+   Los comandos siguientes sirven tanto en macOS/Linux como en Windows:
+
+   ```bash
+   git clone https://github.com/TU_USUARIO/FotoRed.git
+   cd FotoRed
+   ```
+
+   No necesitas copiar la carpeta `Projects` ni los demás proyectos del curso.
+   Los siguientes comandos se ejecutan dentro de la nueva carpeta FotoRed.
+
+3. **Crea un entorno virtual propio.** No copies el entorno de la computadora anterior.
+
+   macOS/Linux:
+
+   ```bash
+   python3 -m venv .venv
+   ```
+
+   Windows:
+
+   ```powershell
+   py -3.14 -m venv .venv
+   ```
+
+4. **Instala las dependencias.** Usa directamente el Python del entorno, sin necesidad
+   de activarlo.
+
+   macOS/Linux:
+
+   ```bash
+   .venv/bin/python -m pip install -r requirements.txt
+   ```
+
+   Windows (PowerShell):
+
+   ```powershell
+   .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+   ```
+
+5. **Comprueba el código.** Las pruebas usan bases temporales y no necesitan los datos
+   de la computadora anterior.
+
+   macOS/Linux:
+
+   ```bash
+   .venv/bin/python -m unittest discover -s tests -v
+   ```
+
+   Windows (PowerShell):
+
+   ```powershell
+   .\.venv\Scripts\python.exe -m unittest discover -s tests -v
+   ```
+
+6. **Opcional: traslada los datos existentes.** Si quieres los mismos usuarios, fotos,
+   perfiles, likes, comentarios y seguimientos, detén Streamlit en ambas computadoras.
+   Copia por un medio privado el archivo `FotoRed/data/fotored.sqlite3` de la computadora
+   original a `FotoRed/data/fotored.sqlite3` en la nueva. Crea `data/` si no existe.
+   Todas las fotos publicadas están dentro de ese archivo. Si el destino ya tiene una
+   base, respáldala antes: reemplazarla no combina sus registros. No subas este archivo
+   a GitHub. Si omites este paso, la aplicación creará una base vacía al arrancar y
+   tendrás que registrar cuentas nuevas.
+
+7. **Ejecuta la aplicación.**
+
+   macOS/Linux:
+
+   ```bash
+   .venv/bin/python -m streamlit run app.py
+   ```
+
+   Windows (PowerShell):
+
+   ```powershell
+   .\.venv\Scripts\python.exe -m streamlit run app.py
+   ```
+
+   Abre la dirección local que indique Streamlit. Si restauraste la base, comprueba
+   que puedas entrar con tus cuentas anteriores. Las fotos de ejemplo externas
+   requieren Internet. Detén la aplicación con Ctrl+C.
+
+8. **Prepara futuros cambios y actualizaciones.** Configura tu identidad Git si vas a
+   crear commits desde esta computadora:
+
+   ```bash
+   git config user.name "Tu nombre"
+   git config user.email "tu-correo@example.com"
+   git status
+   ```
+
+   Antes de continuar trabajo iniciado en otra computadora, guarda tus cambios locales
+   y descarga los commits nuevos con `git pull --ff-only`. Los commits y el push no
+   sincronizan la base SQLite: sus datos se trasladan y respaldan por separado.
+
+Referencia oficial: [Clonar un repositorio](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository).
+
 ## Guardar el progreso con Git y GitHub
 
 Git guarda versiones del proyecto mediante **commits** en tu computadora.
