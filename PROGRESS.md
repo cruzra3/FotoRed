@@ -27,6 +27,7 @@ se ve bien y realizó el commit local.
 4. Feed de seguidos, navegación y revisión final: implementada, verificada automáticamente y aceptada por el usuario.
 
 ## Completado
+- Guía independiente añadida: Descargar y Ejecutar FotoRed en otra computadora.md; clonación, instalación, pruebas y traslado privado de SQLite. Documentación revisada sin instalación en otra máquina.
 - README ampliado con dos guías numeradas: subir el historial a GitHub y clonar/preparar FotoRed en otra computadora (macOS/Linux y Windows)
 - Guías incluyen entorno virtual, dependencias, pruebas, autenticación Git y traslado privado opcional de SQLite; distinguen código e historial de datos locales
 - Comprobado antes de documentar: rama main, sin remotos configurados; no se ejecutaron commits, push, clone ni instalaciones en otra computadora
